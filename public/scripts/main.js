@@ -38,45 +38,50 @@ rhit.PageController = class {
 
 }
 
-rhit.LandingPageController = class extends PageController  {
+// rhit.LandingPageController = class extends PageController  {
 
-	constructor() {
-		pageSwitchButtons();
-	}
+// 	constructor() {
+// 		pageSwitchButtons();
+// 	}
 
-	pageSwitchButtons(){
+// 	pageSwitchButtons(){
 
-	}
+// 	}
 
-}
+// }
 
-rhit.LoginPageController = class extends PageController  {
+// rhit.LoginPageController = class extends PageController  {
 
-}
+// }
 
-rhit.MainPageController = class extends PageController  {
+// rhit.MainPageController = class extends PageController  {
 
-}
+// }
 
-rhit.HoroscopePageController = class extends PageController  {
+// rhit.HoroscopePageController = class extends PageController  {
 
-}
+// }
 
-rhit.HoroscopeManager = class {
+// rhit.HoroscopeManager = class {
 
-}
+// }
 
-rhit.DetailPageController = class extends PageController  {
+// rhit.DetailPageController = class extends PageController  {
 
-}
+// }
 
-rhit.ProfilePageController = class extends PageController  {
+// rhit.ProfilePageController = class extends PageController  {
 
-}
+// }
 
 /* Main */
 rhit.main = function () {
 	console.log("Ready");
+
+	document.querySelector("#logInButton").onclick = (event) => {
+		console.log("Moving")
+		window.location.href = "/login.html";
+	};
 };
 
 rhit.main();
