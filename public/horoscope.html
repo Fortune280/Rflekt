@@ -20,17 +20,58 @@
     </div>
   </nav>
 
+  <div id="detailPage" class="container page-container justify-content-center">
+    <div id="row" class="row justify-content-center">
+      <!-- <div class="col"></div> -->
+      <div id="pin" class="row"></div>
+      <!-- <div class="col"></div> -->
+    </div>
   </div>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js' integrity='sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==' crossorigin='anonymous'></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js" integrity="sha512-6UofPqm0QupIL0kzS/UIzekR73/luZdC6i/kXDbWnLOJoqwklBK6519iUnShaYceJ0y4FaiPtX/hRnV/X/xlUQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.js" integrity="sha512-ec1IDrAZxPSKIe2wZpNhxoFIDjmqJ+Z5SGhbuXZrw+VheJu2MqqJfnYsCD8rf71sQfKYMF4JxNSnKCjDCZ/Hlw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.min.js" integrity="sha512-1/RvZTcCDEUjY/CypiMz+iqqtaoQfAITmNSJY17Myp4Ms5mdxPS5UV7iOfdZoxcGhzFbOm6sntTKJppjvuhg4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script>$("body").bootstrapMaterialDesign();</script>
-  <script src="/__/firebase/7.18.0/firebase-app.js"></script>
-  <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
-  <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
-  <script src="/__/firebase/init.js"></script>
-  <script src="scripts/main.js"></script>
+
+
+
+  <button id="fab" type="button" class="btn bmd-btn-fab" data-toggle="modal" data-target="#addHoroscopeDialog">
+    <i class="material-icons">add</i>
+  </button>
+  <!-- Modal -->
+  <div class="modal fade" id="addHoroscopeDialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Horoscope</h5>
+        </div>
+        <div class="modal-body">
+
+
+          <div class="form-group">
+            <label for="inputHoroscope" class="bmd-label-floating">URL</label>
+            <input type="text" class="form-control" id="inputURL">
+          </div>
+          <div class="form-group">
+            <label for="inputNumber" class="bmd-label-floating">Caption</label>
+            <input type="text" class="form-control" id="inputNumber">
+            <span class="bmd-help">What is this picture about?</span>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
+          <button type="button" id="submitAddHoroscope" class="btn btn-primary" data-dismiss="modal">CREATE</button>
+        </div>
+      </div>
+    </div>
+  
+</div>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/popper.js"></script>
+<script src="scripts/bootstrap-material-design.js"></script>
+<script>$("body").bootstrapMaterialDesign();</script>
+<script src="/__/firebase/7.18.0/firebase-app.js"></script>
+<!-- <script src="/__/firebase/7.18.0/firebase-analytics.js"></script> -->
+<!-- <script src="/__/firebase/7.18.0/firebase-auth.js"></script> -->
+<script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
+<script src="/__/firebase/init.js"></script>
+<script src="/scripts/horoscope.js"></script>
 </body>
 
 </html>

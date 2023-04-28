@@ -25,3 +25,13 @@ body {
   'GRAD' 0,
   'opsz' 48
 }
+
+#fab {
+    position:fixed;
+    right:25px;
+    bottom:25px;
+    background: #800000;
+    color:white;
+    text-align: center;
+    z-index: 999;
+}
