@@ -8,13 +8,20 @@
 
 /** namespace. */
 /** globals */
-// rhit.FB_KEY_USERID = "id";
-// rhit.FB_KEY_USERNAME = "userName";
-// rhit.FB_KEY_PASSWORD = "password";
-// rhit.FB_KEY_SIGN = "sign";
-// rhit.FB_KEY_LAST_LOGIN = "lastLogIn";
-// rhit.fbImageManager = null;
-// rhit.fbImageDetailManager = null;
+// FB_KEY_USERID = "id";
+// FB_KEY_USERNAME = "userName";
+// FB_KEY_PASSWORD = "password";
+// FB_KEY_SIGN = "sign";
+// FB_KEY_LAST_LOGIN = "lastLogIn";
+// fbImageManager = null;
+// fbImageDetailManager = null;
+
+let FB_COLLECTION_HOROSCOPE = "HoroscopeCollections";
+let FB_KEY_HOROSCOPE = "horoscope";
+let FB_KEY_NUMBER = "number";
+let FB_KEY_LAST_TOUCHED = "lastTouched";
+let fbHoroscopeManager = null;
+let fbSingleHoroscopeManager = null;
 
 function htmlToElement(html) {
 	var template = document.createElement('template');
@@ -37,7 +44,7 @@ class LandingPageController {
 
 		document.querySelector("#moveToLogin").onclick = (event) => {
 			console.log("Moving")
-			window.location.href = "/login.html";
+			window.location.href = "/horoscope.html";
 		};
 
 	}
@@ -161,23 +168,229 @@ class MainPageController {
 
 }
 
-class HoroscopePageController {
+// class HoroscopePageController {
 
-	constructor(){
+// 	constructor(){
 
+// 	}
+
+// }
+
+
+
+class horoscopes {
+	constructor(id, horoscope, number) {
+		this.id = id;
+		this.horoscope = horoscope;
+		this.number = number;
+	}
+}
+
+class FbHoroscopeManager {
+	constructor() {
+		this._documentSnapshots = [];
+		this._unsubscribe = null;
+
+		this._ref = firebase.firestore().collection(FB_COLLECTION_HOROSCOPE);
+	}
+	beginListening(changeListener) {
+		console.log("Listening for number");
+		this._unsubscribe = this._ref.orderBy(FB_KEY_LAST_TOUCHED, "desc")
+			.limit(50).onSnapshot((querySnapshot) => {
+				this._documentSnapshots = querySnapshot.docs;
+				console.log("Updated " + this._documentSnapshots.length + "fortunes");
+
+
+				if (changeListener) {
+					changeListener();
+				}
+
+			});
+	}
+	stopListening() {
+		this._unsubscribe();
+	}
+
+	add(horoscope, number) {
+		this._ref.add({
+				[FB_KEY_HOROSCOPE]: horoscope,
+				[FB_KEY_NUMBER]: number,
+				[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+			})
+			.then(function (docRef) {
+				console.log("Document added with ID: ", docRef.id);
+			})
+			.catch(function (error) {
+				console.error("Error adding document: ", error);
+			});
+	}
+
+	update(id, number, horoscope) {}
+	delete(id) {}
+
+	get length() {
+		return this._documentSnapshots.length;
+	}
+	getHoroscopeAtIndex(index) {
+		const doc = this._documentSnapshots[index];
+		return new horoscopes(doc.id, doc.get(FB_KEY_HOROSCOPE), doc.get(FB_KEY_NUMBER));
+	}
+}
+
+
+class ListPageController {
+	constructor() {
+
+		fbHoroscopeManager.beginListening(this.updateList.bind(this));
+
+		$("#addHoroscopeDialog").on("show.bs.modal", () => {
+			document.querySelector("#inputHoroscope").value = "";
+			document.querySelector("#inputNumber").value = "";
+		});
+
+		$("#addHoroscopeDialog").on("shown.bs.modal", () => {
+			document.querySelector("#inputHoroscope").focus();
+		});
+
+		document.querySelector("#submitAddHoroscope").onclick = (event) => {
+			const horoscope = document.querySelector("#inputHoroscope").value;
+			const number = document.querySelector("#inputNumber").value;
+			console.log(horoscope, number);
+			fbHoroscopeManager.add(horoscope, number);
+		};
+
+	}
+
+	updateList() {
+		// const newList = htmlToElement("<div id='columns'></div>")
+		// for (let k = 0; k < fbHoroscopeManager.length; k++) {
+		// 	const horoscope = fbHoroscopeManager.getHoroscopeAtIndex(k);
+		// 	const newCard = this._createCard(horoscope);
+		// 	newCard.onclick = (event) => {
+		// 		console.log(` Save the id ${horoscope.id} then change pages`);
+		// 		// storage.setphotoId(photo.id);
+		// 		window.location.href = `/photo.html?id=${horoscope.id}`;
+		// 	};
+		// 	newList.appendChild(newCard);
+		// }
+
+		// const oldList = document.querySelector("#photosContainer");
+		// oldList.removeAttribute("id");
+		// oldList.hidden = true;
+		// oldList.parentElement.appendChild(newList);
+	}
+
+	_createCard(horoscope) {
+		return htmlToElement(`<div id="${horoscope.id}" class="card">
+		<div class="card-body">
+			<h5 class="card-title">${horoscope.horoscope}</h5>
+			<h6 class="card-subtitle mb-2 text-muted">${horoscope.number}</h6>
+		</div>
+	</div>`);
 	}
 
 }
 
-// rhit.HoroscopeManager = class {
+
+class FbSingleHoroscopeManager {
+	constructor(horoscopeId) {
+		this._documentSnapshot = {};
+		this._unsubscribe = null;
+		this._ref = firebase.firestore().collection(FB_COLLECTION_numberhoroscopeS).doc(horoscopeId);
+	}
+
+	beginListening(changeListener) {
+		console.log("Listen for changes to this horoscope");
+		this._unsubscribe = this._ref.onSnapshot((doc) => {
+			console.log("Horoscope updated ", doc);
+			if (doc.exists) {
+				this._document = doc;
+				changeListener();
+			} else {
+				console.log("Document does not exist any longer.");
+				console.log("CONSIDER: automatically navigate back to the home page.");
+			}
+		});
+	}
+
+	stopListening() {
+		this._unsubscribe();
+	}
+	get horoscope() {
+		return this._document.get(FB_KEY_HOROSCOPE);
+	}
+
+	get number() {
+		return this._document.get(FB_KEY_NUMBER);
+	}
+
+
+	update(horoscope, number) {
+		this._ref.update({
+			[FB_KEY_HOROSCOPE]: horoscope,
+			[FB_KEY_NUMBER]: number,
+			[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+		}).then(() => {
+			console.log("Document has been updated");
+		});
+	}
+	delete() {
+		return this._ref.delete();
+	}
+}
+
+class DetailPageController {
+	constructor() {
+		fbSinglehoroscopeManager.beginListening(this.updateView.bind(this));
+
+		$("#editHoroscopeDialog").on("show.bs.modal", () => {
+			document.querySelector("#inputHoroscope").value = fbSinglehoroscopeManager.horoscope;
+			document.querySelector("#inputNumber").value = fbSinglehoroscopeManager.number;
+		});
+		$("#editHoroscopeDialog").on("shown.bs.modal", () => {
+			document.querySelector("#inputHoroscope").focus();
+		});
+		document.querySelector("#submitEditHoroscope").onclick = (event) => {
+			const horoscope = document.querySelector("#inputHoroscope").value;
+			const number = document.querySelector("#inputNumber").value;
+			console.log(horoscope, number);
+			fbSinglehoroscopeManager.update(horoscope, number);
+		};
+
+		document.querySelector("#submitDeleteHoroscope").onclick = (event) => {
+			fbSinglehoroscopeManager.delete().then(() => {
+				window.location.href = "/"; // Go back to the list of horoscopes.
+		});;
+		};
+
+	}
+	updateView() {
+
+		document.querySelector("#cardHoroscope").innerHTML = fbSinglehoroscopeManager.horoscope;
+		document.querySelector("#cardNumber").innerHTML = fbSinglehoroscopeManager.number;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// HoroscopeManager = class {
 
 // }
 
-// rhit.DetailPageController = class extends PageController  {
+// DetailPageController = class extends PageController  {
 
 // }
 
-// rhit.ProfilePageController = class extends PageController  {
+// ProfilePageController = class extends PageController  {
 
 // }
 
@@ -194,8 +407,25 @@ function main() {
 	}else if(document.querySelector("#mainPage")){
 		console.log("On the main page");
 		new MainPageController();
-	}else if(document.querySelector("#horoscopePage")){
-		console.log("On the horoscope page");
+	}else if (document.querySelector("#horoscopePage")) {
+		console.log("On the horoscope list page");
+		fbHoroscopeManager = new FbHoroscopeManager();
+		new ListPageController();
+	}else if (document.querySelector("#detailPage")) {
+		console.log("On the detail page");
+		// const horoscopeId = storage.gethoroscopeId();
+
+		const urlParams = new URLSearchParams(window.location.search);
+		const horoscopeId = urlParams.get("id");
+
+		if (horoscopeId) {
+			fbSingleHoroscopeManager = new FbSinglehoroscopeManager(horoscopeId);
+			new DetailPageController();
+		} else {
+			console.log("There is no number horoscope id in storage to use.  Abort!");
+			window.location.href = "/"; // Go back to the home page (ListPage)
+		}
+
 	}
 };
 
