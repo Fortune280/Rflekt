@@ -1,5 +1,24 @@
 {
   "dependencies": {
-    "bootstrap": "^5.3.0-alpha3"
-  }
+    "bootstrap": "^5.3.0-alpha3",
+    "nodemon": "^2.0.22"
+  },
+  "name": "rflekt",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fortune280/Rflekt.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Fortune280/Rflekt/issues"
+  },
+  "homepage": "https://github.com/Fortune280/Rflekt#readme",
+  "description": ""
 }
