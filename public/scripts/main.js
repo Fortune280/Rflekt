@@ -17,15 +17,16 @@
 // fbImageDetailManager = null;
 
 let FB_COLLECTION_HOROSCOPE = "HoroscopeCollections";
+let FB_COLLECTION_USERS = "users";
 let FB_KEY_HOROSCOPE = "horoscope";
 let FB_KEY_NUMBER = "number";
 let FB_KEY_LAST_TOUCHED = "lastTouched";
+let FB_KEY_USERNAME = "userName";
 let fbHoroscopeManager = null;
 let fbSingleHoroscopeManager = null;
-let loggedInUser = null;
+let fbAuthManager = null;
+var loggedInUserID = null;
 const API_URL = "https://64497717b88a78a8f008a004.mockapi.io/api/horoscope";
-const API_DATA = getapi(API_URL);
-
 
 function htmlToElement(html) {
 	var template = document.createElement('template');
@@ -71,6 +72,8 @@ class LoginPageController {
 		};
 
 		this.createAccount();
+		this.logIn();
+		// this.signOut();
 	}
 
 	createAccount() {
@@ -86,9 +89,30 @@ class LoginPageController {
 					// Signed in 
 					console.log("CREATED USER");
 					var user = userCredential.user;
-					loggedInUser = user;
+					loggedInUserID = user;
 
-					console.log(loggedInUser.uid);
+					// console.log("UID IS " + user);
+
+					this._ref = firebase.firestore().collection(FB_COLLECTION_USERS);
+
+					this._ref.doc(userCredential.user.uid).set({
+							[FB_KEY_USERNAME]: "NEWER TEST",
+							[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+						}).then((userCredential) => {
+							// Signed in
+							window.location.href = "/main.html";
+							// ...
+						})
+						.catch(function (error) {
+							console.error("Error adding document: ", error);
+						});
+
+						// window.location.href = "/main.html";
+					// db.collection("cities").doc("LA").set({
+					// 	name: "Los Angeles",
+					// 	state: "CA",
+					// 	country: "USA"
+					// })
 					// ...
 				})
 				.catch((error) => {
@@ -103,13 +127,21 @@ class LoginPageController {
 	logIn() {
 
 		document.querySelector("#logInButton").onclick = (event) => {
+			const inputEmailEl = document.querySelector("#inputEmail");
+			const inputPasswordEl = document.querySelector("#inputPassword");
 			console.log(`Log in to existing account for email: ${inputEmailEl.value}  password: ${inputPasswordEl.value}`);
 			firebase.auth().signInWithEmailAndPassword(inputEmailEl.value, inputPasswordEl.value)
 				.then((userCredential) => {
 					// Signed in
-					var user = userCredential.user;
-					loggedInUser = user;
+					// var user = userCredential.user;
+					loggedInUserID = userCredential.user.uid;
+					console.log("Login ID " + loggedInUserID);
+					console.log("Login ID2 " + userCredential.user.uid);
+					// window.location.href = "/main.html";
 					// ...
+				})
+				.then(() => {
+					window.location.href = "/main.html";
 				})
 				.catch((error) => {
 					var errorCode = error.code;
@@ -125,12 +157,14 @@ class LoginPageController {
 			console.log(`Sign Out`);
 			firebase.auth().signOut().then(() => {
 				// Sign-out successful.
+				loggedInUserID = null;
 			}).catch((error) => {
 				// An error happened.
 			});
 		};
 	}
 
+	// TODO: Implement eventually
 	signInAnonymously() {
 		document.querySelector("#anonymousAuthButton").onclick = (event) => {
 			console.log(`Log in via Anonymous auth`);
@@ -174,9 +208,48 @@ class LoginPageController {
 	}
 }
 
+class FbAuthManager {
+	constructor() {
+		this._user = null;
+	}
+	beginListening(changeListener) {
+		firebase.auth().onAuthStateChanged((user) => {
+			this._user = user;
+			changeListener();
+		});
+	}
+	signIn() {
+		Rosefire.signIn("8890b788-971b-4693-b942-8aca6bf79c1f", (err, rfUser) => {
+			if (err) {
+				console.log("Rosefire error!", err);
+				return;
+			}
+			console.log("Rosefire success!", rfUser);
+			firebase.auth().signInWithCustomToken(rfUser.token).catch((error) => {
+				if (error.code === 'auth/invalid-custom-token') {
+					console.log("The token you provided is not valid.");
+				} else {
+					console.log("signInWithCustomToken error", error.message);
+				}
+			});
+		});
+
+
+	}
+	signOut() {
+		firebase.auth().signOut();
+	}
+	get uid() {
+		return this._user.uid;
+	}
+	get isSignedIn() {
+		return !!this._user;
+	}
+}
+
 class MainPageController {
 
-	constructor() {
+	constructor(userID) {
 
 		document.querySelector("#menuMoveToHoroScopePage").onclick = (event) => {
 			console.log("Moving")
@@ -187,6 +260,9 @@ class MainPageController {
 			//TODO: Sign out the user
 			window.location.href = "/login.html";
 		};
+
+		console.log("SELECTED ID " + userID);
+		document.querySelector("#userNameText").innerHTML = userID;
 
 	}
 
@@ -449,35 +525,40 @@ class DetailPageController {
 function main() {
 	console.log("Ready");
 
-	if (document.querySelector("#landingPage")) {
-		console.log("On the landing page");
-		new LandingPageController();
-	} else if (document.querySelector("#loginPage")) {
-		console.log("On the login page");
-		new LoginPageController();
-	} else if (document.querySelector("#mainPage")) {
-		console.log("On the main page");
-		new MainPageController();
-	} else if (document.querySelector("#horoscopePage")) {
-		console.log("On the horoscope list page");
-		fbHoroscopeManager = new FbHoroscopeManager();
-		new ListPageController();
-	} else if (document.querySelector("#detailPage")) {
-		console.log("On the detail page");
-		// const horoscopeId = storage.gethoroscopeId();
-
-		const urlParams = new URLSearchParams(window.location.search);
-		const horoscopeId = urlParams.get("id");
-
-		if (horoscopeId) {
-			fbSingleHoroscopeManager = new FbSinglehoroscopeManager(horoscopeId);
-			new DetailPageController();
-		} else {
-			console.log("There is no number horoscope id in storage to use.  Abort!");
-			window.location.href = "/"; // Go back to the home page (ListPage)
+	fbAuthManager = new FbAuthManager();
+	fbAuthManager.beginListening(() => {
+		console.log(`The auth state has changed.   isSignedIn = ${fbAuthManager.isSignedIn}`);
+		if (document.querySelector("#landingPage")) {
+			console.log("On the landing page");
+			new LandingPageController();
+		} else if (document.querySelector("#loginPage")) {
+			console.log("On the login page");
+			new LoginPageController();
+		} else if (document.querySelector("#mainPage")) {
+			console.log("On the main page");
+			new MainPageController(fbAuthManager.uid);
+		} else if (document.querySelector("#horoscopePage")) {
+			console.log("On the horoscope list page");
+			fbHoroscopeManager = new FbHoroscopeManager();
+			new ListPageController();
+		} else if (document.querySelector("#detailPage")) {
+			console.log("On the detail page");
+			// const horoscopeId = storage.gethoroscopeId();
+	
+			const urlParams = new URLSearchParams(window.location.search);
+			const horoscopeId = urlParams.get("id");
+	
+			if (horoscopeId) {
+				fbSingleHoroscopeManager = new FbSinglehoroscopeManager(horoscopeId);
+				new DetailPageController();
+			} else {
+				console.log("There is no number horoscope id in storage to use.  Abort!");
+				window.location.href = "/"; // Go back to the home page (ListPage)
+			}
+	
 		}
+	});
 
-	}
 };
 
 main();
