@@ -62,7 +62,7 @@ class LoginPageController {
 
 	createAccount() {
 
-		
+
 
 		document.querySelector("#createAccountButton").onclick = (event) => {
 			const inputEmailEl = document.querySelector("#inputEmail");
@@ -259,8 +259,27 @@ class ListPageController {
 		document.querySelector("#submitAddHoroscope").onclick = (event) => {
 			const horoscope = document.querySelector("#inputHoroscope").value;
 			const number = document.querySelector("#inputNumber").value;
-			console.log(horoscope, number);
-			fbHoroscopeManager.add(horoscope, number);
+			/**
+			int temp = 0;
+			for (int i = 0; i < item.length(); i++) {
+				temp = (temp * 31) + (int) item.charAt(i);
+			}
+
+			int hash = (temp);
+
+			return hash; */
+
+			let hash = 0;
+			for (let i = 0; i < number.length; i++) {
+				hash = (hash * 31) + int(number.charAt(i));
+			}
+			if (hash < 0){
+				hash += Number.MAX_VALUE + 1;
+			}
+			
+
+			console.log(horoscope, hash);
+			fbHoroscopeManager.add(horoscope, hash);
 		};
 
 	}

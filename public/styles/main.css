@@ -56,3 +56,7 @@ body {
 #menuEdit, #menuDelete {
     display: none;
 }
+
+.form-group{
+    margin-bottom: 20px;
+}
