@@ -44,13 +44,19 @@
 
 
           <div class="form-group">
-            <label for="inputHoroscope" class="bmd-label-floating">URL</label>
+            <label for="inputHoroscope" class="bmd-label-floating">Star Sign</label>
             <input type="text" class="form-control" id="inputHoroscope">
           </div>
           <div class="form-group">
-            <label for="inputNumber" class="bmd-label-floating">Caption</label>
-            <input type="text" class="form-control" id="inputNumber">
-            <span class="bmd-help">What is this picture about?</span>
+            <label for="inputNumber" class="bmd-label-floating">number</label>
+            <!-- <input type="text" class="form-control" id="inputNumber"> -->
+            <select class="form-select" aria-label="Default select example" id="inputNumber">
+              <option selected>What is your number?</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+            <span class="bmd-help">What is your Star Sign?</span>
           </div>
 
         </div>
@@ -62,6 +68,7 @@
     </div>
   
 </div>
+
 <script src="scripts/jquery.min.js"></script>
 <script src="scripts/popper.js"></script>
 <script src="scripts/bootstrap-material-design.js"></script>
