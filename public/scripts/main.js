@@ -30,23 +30,17 @@ function htmlToElement(html) {
 	return template.content.firstChild;
 }
 
-function updateView(){
+function updateView() {
 
 }
 
 class LandingPageController {
 
 	constructor() {
-		this.pageSwitchButtons();
-	}
-
-	pageSwitchButtons(){
-
 		document.querySelector("#moveToLogin").onclick = (event) => {
 			console.log("Moving")
-			window.location.href = "/horoscope.html";
+			window.location.href = "/login.html";
 		};
-
 	}
 
 }
@@ -55,19 +49,23 @@ class LoginPageController {
 
 	constructor(params) {
 
-		const inputEmailEl = document.querySelector("#inputEmail");
-		const inputPasswordEl = document.querySelector("#inputPassword");
+
 
 		document.querySelector("#moveToMain").onclick = (event) => {
 			console.log("Moving")
 			window.location.href = "/main.html";
 		};
+
+		this.createAccount();
 	}
 
 	createAccount() {
 
+		
 
 		document.querySelector("#createAccountButton").onclick = (event) => {
+			const inputEmailEl = document.querySelector("#inputEmail");
+			const inputPasswordEl = document.querySelector("#inputPassword");
 			console.log(`Create account for email: ${inputEmailEl.value}  password: ${inputPasswordEl.value}`);
 			firebase.auth().createUserWithEmailAndPassword(inputEmailEl.value, inputPasswordEl.value)
 				.then((userCredential) => {
@@ -160,25 +158,26 @@ class LoginPageController {
 
 class MainPageController {
 
-	constructor(){
+	constructor() {
+
+		document.querySelector("#menuMoveToHoroScopePage").onclick = (event) => {
+			console.log("Moving")
+			window.location.href = "/horoscope.html";
+		};
+		document.querySelector("#menuSignOut").onclick = (event) => {
+			console.log("Moving")
+			//TODO: Sign out the user
+			window.location.href = "/login.html";
+		};
 
 	}
 
-	
+
 
 }
 
-// class HoroscopePageController {
 
-// 	constructor(){
-
-// 	}
-
-// }
-
-
-
-class horoscopes {
+class Horoscope {
 	constructor(id, horoscope, number) {
 		this.id = id;
 		this.horoscope = horoscope;
@@ -233,7 +232,7 @@ class FbHoroscopeManager {
 	}
 	getHoroscopeAtIndex(index) {
 		const doc = this._documentSnapshots[index];
-		return new horoscopes(doc.id, doc.get(FB_KEY_HOROSCOPE), doc.get(FB_KEY_NUMBER));
+		return new Horoscope(doc.id, doc.get(FB_KEY_HOROSCOPE), doc.get(FB_KEY_NUMBER));
 	}
 }
 
@@ -296,7 +295,7 @@ class FbSingleHoroscopeManager {
 	constructor(horoscopeId) {
 		this._documentSnapshot = {};
 		this._unsubscribe = null;
-		this._ref = firebase.firestore().collection(FB_COLLECTION_numberhoroscopeS).doc(horoscopeId);
+		this._ref = firebase.firestore().collection(FB_COLLECTION_numberHoroscope).doc(horoscopeId);
 	}
 
 	beginListening(changeListener) {
@@ -359,8 +358,8 @@ class DetailPageController {
 
 		document.querySelector("#submitDeleteHoroscope").onclick = (event) => {
 			fbSinglehoroscopeManager.delete().then(() => {
-				window.location.href = "/"; // Go back to the list of horoscopes.
-		});;
+				window.location.href = "/"; // Go back to the list of Horoscope.
+			});;
 		};
 
 	}
@@ -398,20 +397,20 @@ class DetailPageController {
 function main() {
 	console.log("Ready");
 
-	if(document.querySelector("#landingPage")){
+	if (document.querySelector("#landingPage")) {
 		console.log("On the landing page");
 		new LandingPageController();
-	}else if(document.querySelector("#loginPage")){
+	} else if (document.querySelector("#loginPage")) {
 		console.log("On the login page");
 		new LoginPageController();
-	}else if(document.querySelector("#mainPage")){
+	} else if (document.querySelector("#mainPage")) {
 		console.log("On the main page");
 		new MainPageController();
-	}else if (document.querySelector("#horoscopePage")) {
+	} else if (document.querySelector("#horoscopePage")) {
 		console.log("On the horoscope list page");
 		fbHoroscopeManager = new FbHoroscopeManager();
 		new ListPageController();
-	}else if (document.querySelector("#detailPage")) {
+	} else if (document.querySelector("#detailPage")) {
 		console.log("On the detail page");
 		// const horoscopeId = storage.gethoroscopeId();
 
