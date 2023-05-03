@@ -22,6 +22,7 @@ let FB_KEY_NUMBER = "number";
 let FB_KEY_LAST_TOUCHED = "lastTouched";
 let fbHoroscopeManager = null;
 let fbSingleHoroscopeManager = null;
+let loggedInUser = null;
 
 function htmlToElement(html) {
 	var template = document.createElement('template');
@@ -72,6 +73,9 @@ class LoginPageController {
 					// Signed in 
 					console.log("CREATED USER");
 					var user = userCredential.user;
+					loggedInUser = user;
+
+					console.log(loggedInUser.uid);
 					// ...
 				})
 				.catch((error) => {
@@ -91,6 +95,7 @@ class LoginPageController {
 				.then((userCredential) => {
 					// Signed in
 					var user = userCredential.user;
+					loggedInUser = user;
 					// ...
 				})
 				.catch((error) => {
