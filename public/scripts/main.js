@@ -23,12 +23,25 @@ let FB_KEY_LAST_TOUCHED = "lastTouched";
 let fbHoroscopeManager = null;
 let fbSingleHoroscopeManager = null;
 let loggedInUser = null;
+const API_URL = "https://64497717b88a78a8f008a004.mockapi.io/api/horoscope";
+const API_DATA = getapi(API_URL);
+
 
 function htmlToElement(html) {
 	var template = document.createElement('template');
 	html = html.trim();
 	template.innerHTML = html;
 	return template.content.firstChild;
+}
+
+async function getapi(url) {
+	// Storing response
+	const response = await fetch(url);
+
+	// Storing data in form of JSON
+	var data = await response.text();
+
+	return (data);
 }
 
 function updateView() {
@@ -259,24 +272,16 @@ class ListPageController {
 		document.querySelector("#submitAddHoroscope").onclick = (event) => {
 			const horoscope = document.querySelector("#inputHoroscope").value;
 			const number = document.querySelector("#inputNumber").value;
-			/**
-			int temp = 0;
-			for (int i = 0; i < item.length(); i++) {
-				temp = (temp * 31) + (int) item.charAt(i);
-			}
-
-			int hash = (temp);
-
-			return hash; */
 
 			let hash = 0;
 			for (let i = 0; i < number.length; i++) {
-				hash = (hash * 31) + int(number.charAt(i));
+				hash = (hash * 31) + (number.charCodeAt(i));
 			}
-			if (hash < 0){
+			if (hash < 0) {
 				hash += Number.MAX_VALUE + 1;
 			}
-			
+
+			hash = hash % 10;
 
 			console.log(horoscope, hash);
 			fbHoroscopeManager.add(horoscope, hash);
@@ -285,29 +290,52 @@ class ListPageController {
 	}
 
 	updateList() {
-		// const newList = htmlToElement("<div id='columns'></div>")
-		// for (let k = 0; k < fbHoroscopeManager.length; k++) {
-		// 	const horoscope = fbHoroscopeManager.getHoroscopeAtIndex(k);
-		// 	const newCard = this._createCard(horoscope);
-		// 	newCard.onclick = (event) => {
-		// 		console.log(` Save the id ${horoscope.id} then change pages`);
-		// 		// storage.setphotoId(photo.id);
-		// 		window.location.href = `/photo.html?id=${horoscope.id}`;
-		// 	};
-		// 	newList.appendChild(newCard);
-		// }
 
-		// const oldList = document.querySelector("#photosContainer");
-		// oldList.removeAttribute("id");
-		// oldList.hidden = true;
-		// oldList.parentElement.appendChild(newList);
+		fetch(API_URL)
+			.then(response => {
+				if (response.ok) {
+					return response;
+				}
+				throw Error(response.statusText);
+			})
+			.then(response => response.json())
+			// .then(text => console.log(typeof text))
+			.then(text => {
+				const newList = htmlToElement("<div id='columns'></div>")
+				for (let k = 0; k < fbHoroscopeManager.length; k++) {
+					const horoscope = fbHoroscopeManager.getHoroscopeAtIndex(k);
+					const newCard = this._createCard(horoscope, text[horoscope.number].horoscopeEntry, k);
+					// newCard.onclick = (event) => {
+					// 	console.log(` Save the id ${horoscope.id} then change pages`);
+
+					// 	window.location.href = `/photo.html?id=${horoscope.id}`;
+					// };
+					newList.appendChild(newCard);
+				}
+
+				const oldList = document.querySelector("#horoscopePage");
+				oldList.removeAttribute("id");
+				oldList.hidden = true;
+				oldList.parentElement.appendChild(newList);
+
+
+			})
+			.catch(error => console.log('There was an error:', error));
+
+
+
+
+
 	}
 
-	_createCard(horoscope) {
+	_createCard(horoscope, entry) {
+		console.log("generating horoscope")
+		console.log(entry);
+
 		return htmlToElement(`<div id="${horoscope.id}" class="card">
 		<div class="card-body">
 			<h5 class="card-title">${horoscope.horoscope}</h5>
-			<h6 class="card-subtitle mb-2 text-muted">${horoscope.number}</h6>
+			<h6  class="card-subtitle mb-2 text-muted">${entry}</h6>
 		</div>
 	</div>`);
 	}
