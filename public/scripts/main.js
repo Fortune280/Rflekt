@@ -35,7 +35,7 @@ function htmlToElement(html) {
 	return template.content.firstChild;
 }
 
-async function getapi(url) {
+async function getApi(url) {
 	// Storing response
 	const response = await fetch(url);
 
@@ -62,7 +62,7 @@ class LandingPageController {
 
 class LoginPageController {
 
-	constructor(params) {
+	constructor() {
 
 
 
@@ -74,6 +74,9 @@ class LoginPageController {
 		this.createAccount();
 		this.logIn();
 		// this.signOut();
+		this.signInRose();
+
+		console.log("LoginPageConstructor")
 	}
 
 	createAccount() {
@@ -88,8 +91,8 @@ class LoginPageController {
 				.then((userCredential) => {
 					// Signed in 
 					console.log("CREATED USER");
-					var user = userCredential.user;
-					loggedInUserID = user;
+					// var user = userCredential.user;
+					// loggedInUserID = user;
 
 					// console.log("UID IS " + user);
 
@@ -97,6 +100,7 @@ class LoginPageController {
 
 					this._ref.doc(userCredential.user.uid).set({
 							[FB_KEY_USERNAME]: "NEWER TEST",
+							[FB_KEY_HOROSCOPE]: "",
 							[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
 						}).then((userCredential) => {
 							// Signed in
@@ -107,7 +111,7 @@ class LoginPageController {
 							console.error("Error adding document: ", error);
 						});
 
-						// window.location.href = "/main.html";
+					// window.location.href = "/main.html";
 					// db.collection("cities").doc("LA").set({
 					// 	name: "Los Angeles",
 					// 	state: "CA",
@@ -131,15 +135,15 @@ class LoginPageController {
 			const inputPasswordEl = document.querySelector("#inputPassword");
 			console.log(`Log in to existing account for email: ${inputEmailEl.value}  password: ${inputPasswordEl.value}`);
 			firebase.auth().signInWithEmailAndPassword(inputEmailEl.value, inputPasswordEl.value)
-				.then((userCredential) => {
-					// Signed in
-					// var user = userCredential.user;
-					loggedInUserID = userCredential.user.uid;
-					console.log("Login ID " + loggedInUserID);
-					console.log("Login ID2 " + userCredential.user.uid);
-					// window.location.href = "/main.html";
-					// ...
-				})
+				// .then((userCredential) => {
+				// 	// Signed in
+				// 	// var user = userCredential.user;
+				// 	// loggedInUserID = userCredential.user.uid;
+				// 	// console.log("Login ID " + loggedInUserID);
+				// 	// console.log("Login ID2 " + userCredential.user.uid);
+				// 	// window.location.href = "/main.html";
+				// 	// ...
+				// })
 				.then(() => {
 					window.location.href = "/main.html";
 				})
@@ -149,6 +153,47 @@ class LoginPageController {
 					console.log("Log in user error", errorCode, errorMessage);
 				});
 		};
+
+	}
+
+	// 9b90da36-b490-4ed2-b41c-1c18e1c77bfb
+	signInRose() {
+		console.log("Setting up Rosefire")
+		document.querySelector("#logInRoseButton").onclick = (event) => {
+			console.log("Logging in with Rosefire")
+			Rosefire.signIn("9b90da36-b490-4ed2-b41c-1c18e1c77bfb", (err, rfUser) => {
+				if (err) {
+					console.log("Rosefire error!", err);
+					return;
+				}
+				console.log("Rosefire success!", rfUser);
+				firebase.auth().signInWithCustomToken(rfUser.token).then((rfUser) => {
+						this._ref = firebase.firestore().collection(FB_COLLECTION_USERS);
+						
+
+						this._ref.doc(rfUser.username).set({
+								[FB_KEY_USERNAME]: rfUser.username,
+								[FB_KEY_HOROSCOPE]: "",
+								[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+							}).then((userCredential) => {
+								// Signed in
+								window.location.href = "/main.html";
+								// ...
+							})
+							.catch(function (error) {
+								console.error("Error adding document: ", error);
+							});
+
+					})
+					.catch((error) => {
+						if (error.code === 'auth/invalid-custom-token') {
+							console.log("The token you provided is not valid.");
+						} else {
+							console.log("signInWithCustomToken error", error.message);
+						}
+					});
+			});
+		}
 
 	}
 
@@ -218,24 +263,6 @@ class FbAuthManager {
 			changeListener();
 		});
 	}
-	signIn() {
-		Rosefire.signIn("8890b788-971b-4693-b942-8aca6bf79c1f", (err, rfUser) => {
-			if (err) {
-				console.log("Rosefire error!", err);
-				return;
-			}
-			console.log("Rosefire success!", rfUser);
-			firebase.auth().signInWithCustomToken(rfUser.token).catch((error) => {
-				if (error.code === 'auth/invalid-custom-token') {
-					console.log("The token you provided is not valid.");
-				} else {
-					console.log("signInWithCustomToken error", error.message);
-				}
-			});
-		});
-
-
-	}
 	signOut() {
 		firebase.auth().signOut();
 	}
@@ -280,14 +307,17 @@ class Horoscope {
 }
 
 class FbHoroscopeManager {
-	constructor() {
+
+
+	constructor(userID) {
 		this._documentSnapshots = [];
 		this._unsubscribe = null;
 
-		this._ref = firebase.firestore().collection(FB_COLLECTION_HOROSCOPE);
+		this._ref = firebase.firestore().collection(FB_COLLECTION_USERS).doc(userID).collection(FB_KEY_HOROSCOPE);
 	}
 	beginListening(changeListener) {
 		console.log("Listening for number");
+		this._unsubscribe = this._ref.number;
 		this._unsubscribe = this._ref.orderBy(FB_KEY_LAST_TOUCHED, "desc")
 			.limit(50).onSnapshot((querySnapshot) => {
 				this._documentSnapshots = querySnapshot.docs;
@@ -304,18 +334,34 @@ class FbHoroscopeManager {
 		this._unsubscribe();
 	}
 
-	add(horoscope, number) {
+	add(horoscope, number, userID) {
+		console.log("ADDING TO USERID " + userID);
 		this._ref.add({
+
 				[FB_KEY_HOROSCOPE]: horoscope,
 				[FB_KEY_NUMBER]: number,
-				[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+				[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now()
+
+			}, {
+				merge: true
 			})
-			.then(function (docRef) {
-				console.log("Document added with ID: ", docRef.id);
-			})
+			// .then(function (docRef) {
+			// 	console.log("Document added with ID: ", docRef.id);
+			// })
 			.catch(function (error) {
 				console.error("Error adding document: ", error);
 			});
+		// this._ref.add({
+		// 		[FB_KEY_HOROSCOPE]: horoscope,
+		// 		[FB_KEY_NUMBER]: number,
+		// 		[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+		// 	})
+		// 	.then(function (docRef) {
+		// 		console.log("Document added with ID: ", docRef.id);
+		// 	})
+		// 	.catch(function (error) {
+		// 		console.error("Error adding document: ", error);
+		// 	});
 	}
 
 	update(id, number, horoscope) {}
@@ -324,16 +370,21 @@ class FbHoroscopeManager {
 	get length() {
 		return this._documentSnapshots.length;
 	}
-	getHoroscopeAtIndex(index) {
+
+	//TODO: HERE
+	getHoroscopeAtIndex(index, userID) {
 		const doc = this._documentSnapshots[index];
+		// const doc = 
+		console.log("Returning new Horoscope with id: " + doc.id + " and horoscope " +doc.get(FB_KEY_HOROSCOPE))
 		return new Horoscope(doc.id, doc.get(FB_KEY_HOROSCOPE), doc.get(FB_KEY_NUMBER));
 	}
 }
 
 
 class ListPageController {
-	constructor() {
+	constructor(userID) {
 
+		this.updateList();
 		fbHoroscopeManager.beginListening(this.updateList.bind(this));
 
 		$("#addHoroscopeDialog").on("show.bs.modal", () => {
@@ -360,12 +411,13 @@ class ListPageController {
 			hash = hash % 10;
 
 			console.log(horoscope, hash);
-			fbHoroscopeManager.add(horoscope, hash);
+			fbHoroscopeManager.add(horoscope, hash, userID);
 		};
 
 	}
 
 	updateList() {
+		console.log("UPDAITING LIST")
 
 		fetch(API_URL)
 			.then(response => {
@@ -378,9 +430,12 @@ class ListPageController {
 			// .then(text => console.log(typeof text))
 			.then(text => {
 				const newList = htmlToElement("<div id='columns'></div>")
+				//TODO: Probably Here
 				for (let k = 0; k < fbHoroscopeManager.length; k++) {
 					const horoscope = fbHoroscopeManager.getHoroscopeAtIndex(k);
-					const newCard = this._createCard(horoscope, text[horoscope.number].horoscopeEntry, k);
+					console.log("HOROSCOPE " + horoscope + " Number " + horoscope.number + " Value " + text[horoscope.number].horoscopeEntry)
+					const newCard = this._createCard(horoscope, text[horoscope.number].horoscopeEntry);
+					// const newCard = this._createCard()
 					// newCard.onclick = (event) => {
 					// 	console.log(` Save the id ${horoscope.id} then change pages`);
 
@@ -389,7 +444,8 @@ class ListPageController {
 					newList.appendChild(newCard);
 				}
 
-				const oldList = document.querySelector("#horoscopePage");
+				const oldList = document.querySelector("#columns");
+
 				oldList.removeAttribute("id");
 				oldList.hidden = true;
 				oldList.parentElement.appendChild(newList);
@@ -457,6 +513,8 @@ class FbSingleHoroscopeManager {
 			[FB_KEY_HOROSCOPE]: horoscope,
 			[FB_KEY_NUMBER]: number,
 			[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+		}, {
+			merge: true
 		}).then(() => {
 			console.log("Document has been updated");
 		});
@@ -539,15 +597,15 @@ function main() {
 			new MainPageController(fbAuthManager.uid);
 		} else if (document.querySelector("#horoscopePage")) {
 			console.log("On the horoscope list page");
-			fbHoroscopeManager = new FbHoroscopeManager();
-			new ListPageController();
+			fbHoroscopeManager = new FbHoroscopeManager(fbAuthManager.uid);
+			new ListPageController(fbAuthManager.uid);
 		} else if (document.querySelector("#detailPage")) {
 			console.log("On the detail page");
 			// const horoscopeId = storage.gethoroscopeId();
-	
+
 			const urlParams = new URLSearchParams(window.location.search);
 			const horoscopeId = urlParams.get("id");
-	
+
 			if (horoscopeId) {
 				fbSingleHoroscopeManager = new FbSinglehoroscopeManager(horoscopeId);
 				new DetailPageController();
@@ -555,7 +613,7 @@ function main() {
 				console.log("There is no number horoscope id in storage to use.  Abort!");
 				window.location.href = "/"; // Go back to the home page (ListPage)
 			}
-	
+
 		}
 	});
 
