@@ -14,24 +14,72 @@ body {
     margin-top: 75px;
 }
 
-.btn{
-    fill:darkgreen;
+.btn {
+    fill: darkgreen;
 }
 
 .material-symbols-outlined {
-  font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 48
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 48
 }
 
+
+#textBox {
+    background: rgba(0, 0, 0, 0.7);
+    height: auto;
+    /* border-radius: 30px; */
+    text-align: center;
+    /* align-content: right; */
+    line-height: 250px;
+    color: white;
+    margin: 0 auto;
+}
+
+.container {
+    display: grid;
+}
+
+#left {
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+#right {
+    position: absolute;
+    text-align: right;
+}
+
+
+/* .container page-container {
+    position: relative;
+    top: 50%;
+    text-align: center;
+    transform: translate(0, -50%);
+    padding: 1rem;
+     }  */
+
+
+/* .left-half {
+    grid-column: 1;
+}
+
+.right-half {
+    background: rgba(0, 0, 0, 0.7);
+    grid-column: 1;
+    grid-template-rows: max-content;
+} */
+
 #fab {
-    position:fixed;
-    right:25px;
-    bottom:25px;
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
     background: #800000;
-    color:white;
+    color: white;
     text-align: center;
     z-index: 999;
 }
@@ -53,19 +101,21 @@ body {
     margin-right: 0.75rem;
 }
 
-#menuEdit, #menuDelete {
+#menuEdit,
+#menuDelete {
     display: none;
 }
 
-.form-group{
+.form-group {
     margin-bottom: 20px;
 }
 
 .card {
     margin: 10px 0;
 }
+
 #listPage .card-title,
-#listPage .card-subtitle{
+#listPage .card-subtitle {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
