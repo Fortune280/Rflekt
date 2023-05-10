@@ -386,8 +386,16 @@ class ListPageController {
 					console.log("HOROSCOPE " + horoscope + " Number " + horoscope.number + " Value " + text[horoscope.number].horoscopeEntry)
 
 					const newCard = this._createCard(horoscope, text[horoscope.number].horoscopeEntry);
+
+					newCard.onclick = (event) => {
+						console.log(` Save the id ${horoscope.id} then change pages`);
+						window.location.href = `/horoscope_detail.html?id=${horoscope.id}`;
+					};
+
 					newList.appendChild(newCard);
 				}
+
+
 
 				const oldList = document.querySelector("#columns");
 
@@ -422,10 +430,15 @@ class ListPageController {
 
 //TODO: IMPLEMENT
 class FbSingleHoroscopeManager {
-	constructor(horoscopeId) {
+
+	constructor(horoscopeId, userID) {
 		this._documentSnapshot = {};
 		this._unsubscribe = null;
-		this._ref = firebase.firestore().collection(FB_COLLECTION_numberHoroscope).doc(horoscopeId);
+		this._ref = firebase.firestore().collection(FB_COLLECTION_USERS).doc(userID).collection(FB_COLLECTION_USER_HOROSCOPES).doc(horoscopeId);
+		console.log("in singlehoroscope constructor");
+		console.log("horo id:" + horoscopeId);
+		console.log("USER ID: " + userID);
+		// console.log("this._ref = " + this._ref.get(FB_KEY_HOROSCOPE));
 	}
 
 	beginListening(changeListener) {
@@ -445,6 +458,8 @@ class FbSingleHoroscopeManager {
 	stopListening() {
 		this._unsubscribe();
 	}
+
+	
 	get horoscope() {
 		return this._document.get(FB_KEY_HOROSCOPE);
 	}
@@ -458,7 +473,7 @@ class FbSingleHoroscopeManager {
 		this._ref.update({
 			[FB_KEY_HOROSCOPE]: horoscope,
 			[FB_KEY_NUMBER]: number,
-			[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+			[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now()
 		}, {
 			merge: true
 		}).then(() => {
@@ -473,33 +488,57 @@ class FbSingleHoroscopeManager {
 //TODO: IMPLEMENT
 class DetailPageController {
 	constructor() {
-		fbSinglehoroscopeManager.beginListening(this.updateView.bind(this));
-
-		$("#editHoroscopeDialog").on("show.bs.modal", () => {
-			document.querySelector("#inputHoroscope").value = fbSinglehoroscopeManager.horoscope;
-			document.querySelector("#inputNumber").value = fbSinglehoroscopeManager.number;
-		});
-		$("#editHoroscopeDialog").on("shown.bs.modal", () => {
-			document.querySelector("#inputHoroscope").focus();
-		});
-		document.querySelector("#submitEditHoroscope").onclick = (event) => {
-			const horoscope = document.querySelector("#inputHoroscope").value;
-			const number = document.querySelector("#inputNumber").value;
-			console.log(horoscope, number);
-			fbSinglehoroscopeManager.update(horoscope, number);
-		};
+		fbSingleHoroscopeManager.beginListening(this.updateView.bind(this));
 
 		document.querySelector("#submitDeleteHoroscope").onclick = (event) => {
-			fbSinglehoroscopeManager.delete().then(() => {
-				window.location.href = "/"; // Go back to the list of Horoscope.
+			fbSingleHoroscopeManager.delete().then(() => {
+				window.location.href = "/horoscope.html"; // Go back to the list of Horoscope.
 			});;
 		};
 
 	}
 	updateView() {
+		fetch(API_URL)
+			.then(response => {
+				if (response.ok) {
+					return response;
+				}
+				throw Error(response.statusText);
+			})
+			.then(response => response.json())
+			.then(text => {
+				const newList = htmlToElement("<div id='cardHoroscope'></div>")
+					console.log("HOROSCOPE " + fbSingleHoroscopeManager.horoscope + " Number " + fbSingleHoroscopeManager.number + " Value " + text[fbSingleHoroscopeManager.number].horoscopeEntry)
 
-		document.querySelector("#cardHoroscope").innerHTML = fbSinglehoroscopeManager.horoscope;
-		document.querySelector("#cardNumber").innerHTML = fbSinglehoroscopeManager.number;
+					const newCard = this._createCard(fbSingleHoroscopeManager.horoscope, text[fbSingleHoroscopeManager.number].horoscopeEntry);
+
+					newList.appendChild(newCard);
+				
+
+
+
+				const oldList = document.querySelector("#cardHoroscope");
+
+				oldList.removeAttribute("id");
+				oldList.hidden = true;
+				oldList.parentElement.appendChild(newList);
+
+
+			})
+			.catch(error => console.log('There was an error:', error));
+
+	}
+	_createCard(horoscope, entry) {
+		console.log("generating horoscope")
+		console.log(entry);
+
+		return htmlToElement(`<div class="card">
+		<div class="card-body">
+			<h5 class="card-title">${horoscope}</h5>
+			<h6  class="card-subtitle mb-2 text-muted">${entry}</h6>
+		</div>
+	</div>`);
+
 	}
 }
 
@@ -535,7 +574,9 @@ function main() {
 			const horoscopeId = urlParams.get("id");
 
 			if (horoscopeId) {
-				fbSingleHoroscopeManager = new FbSinglehoroscopeManager(horoscopeId);
+				console.log("ID horoscope:" + horoscopeId);
+				console.log("ID user:" + fbAuthManager.uid);
+				fbSingleHoroscopeManager = new FbSingleHoroscopeManager(horoscopeId, fbAuthManager.uid);
 				new DetailPageController();
 			} else {
 				console.log("There is no number horoscope id in storage to use.  Abort!");

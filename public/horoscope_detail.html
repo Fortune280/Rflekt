@@ -16,11 +16,58 @@
 <body>
   <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="/horoscope.html">Navbar</a>
     </div>
   </nav>
 
-  </div>
+
+<div id="detailPage" class="container page-container justify-content-center">
+  <div id="row" class="row justify-content-center">
+      <div id="cardHoroscope"> </div>
+      <div id="cardNumber"> </div>
+    </div>
+  <button id="fab" type="button" class="btn bmd-btn-fab" data-toggle="modal" data-target="#deleteHoroscopeDialog">
+    <i class="material-icons">delete</i>
+  </button>
+
+    <div class="modal fade" id="editHoroscopeDialog" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit this Caption</h5>
+          </div>
+          <div class="modal-body">
+    
+         
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
+            <button type="button" id="submitEditPhoto" class="btn btn-primary" data-dismiss="modal">SAVE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="modal fade" id="deleteHoroscopeDialog" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete this photo</h5>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete this horoscope??
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
+            <button type="button" id="submitDeleteHoroscope" class="btn btn-primary" data-dismiss="modal">DELETE</button>
+          </div>
+        </div>
+      </div>
+  
+
+</div>
+
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>
   <script src="scripts/bootstrap-material-design.js"></script>
