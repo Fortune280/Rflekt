@@ -309,7 +309,14 @@ class FbHoroscopeManager {
 	}
 
 	update(id, number, horoscope) { }
-	delete(id) { }
+	delete(id) { 
+
+		this._ref.collection(FB_COLLECTION_USER_HOROSCOPES).doc(id).delete()
+			.catch((error) => {
+				console.error("Error removing document: ", error);
+			})
+
+	}
 
 	get length() {
 		return this._documentSnapshots.length;
@@ -353,8 +360,12 @@ class ListPageController {
 			hash = hash % 10;
 
 			console.log(horoscope, hash);
-			fbHoroscopeManager.add(horoscope, hash, userID);
+			fbHoroscopeManager.add(horoscope, hash);
 		};
+
+		document.querySelector("#deleteHoroscope").onclick = (event) => {
+			fbHoroscopeManager.delete("Tfv8JKH2VBKLqZfDaXmA");
+		}
 
 	}
 
