@@ -62,8 +62,8 @@ class LoginPageController {
 
 		this.createAccount();
 		this.logIn();
-		// this.signOut();
 		this.signInRose();
+		// this.signInAnonymously();
 
 		console.log("LoginPageConstructor")
 	}
@@ -100,6 +100,14 @@ class LoginPageController {
 				.catch((error) => {
 					var errorCode = error.code;
 					var errorMessage = error.message;
+
+					if(errorCode == "auth/invalid-email"){
+						alert("You have entered an invalid email address!");
+						document.querySelector("#inputEmail").focus();
+					}else if(errorCode == "auth/weak-password"){
+						alert("Invalid password, password must be at least 6 characters");
+						document.querySelector("#inputPassword").focus();
+					}
 					console.log("Create user error", errorCode, errorMessage);
 				});
 		};
@@ -164,25 +172,13 @@ class LoginPageController {
 
 	}
 
-	signOut() {
-
-		document.querySelector("#signOutButton").onclick = (event) => {
-			console.log(`Sign Out`);
-			firebase.auth().signOut().then(() => {
-				console.log("Sign out successful")
-			}).catch((error) => {
-				console.error("Error adding document: ", error);
-			});
-		};
-	}
-
-	// TODO: Implement eventually
+	// TODO: Says "This operation is restricted to administrators only.""
 	signInAnonymously() {
 		document.querySelector("#anonymousAuthButton").onclick = (event) => {
 			console.log(`Log in via Anonymous auth`);
 			firebase.auth().signInAnonymously()
 				.then(() => {
-					// Signed in..
+					window.location.href = "/main.html";
 				})
 				.catch((error) => {
 					var errorCode = error.code;
@@ -258,6 +254,21 @@ class MainPageController {
 		console.log("SELECTED ID " + userID);
 		document.querySelector("#userNameText").innerHTML = userID;
 
+		this.signOut();
+
+	}
+
+	signOut() {
+
+		document.querySelector("#menuSignOut").onclick = (event) => {
+			console.log(`Sign Out`);
+			firebase.auth().signOut().then(() => {
+				console.log("Sign out successful")
+				window.location.href = "/login.html";
+			}).catch((error) => {
+				console.error("Error adding document: ", error);
+			});
+		};
 	}
 
 
@@ -357,8 +368,10 @@ class ListPageController {
 				hash += Number.MAX_VALUE + 1;
 			}
 
-			hash = hash % 10;
+			hash = hash % 100;
 
+
+			//Use https://stackoverflow.com/questions/57626001/how-do-i-check-if-a-field-value-exists-across-all-documents-in-a-collection-in-c to prevent doubles
 			console.log(horoscope, hash);
 			fbHoroscopeManager.add(horoscope, hash);
 		};
