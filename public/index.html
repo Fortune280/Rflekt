@@ -20,14 +20,35 @@
 </head>
 
 <body>
-  <span id="landingPage" class="container-fluid">
-    <div class = "row">
-    <div class="col-6" id = "left"><img src="images/Rflekt_Logo.png" alt="Website Logo"><button id="moveToLogin" type="button" class="btn text-white">Move to Login Page</button></div>
-    <div class="col-6" id = "right">
-      <div id="textBox"><button id="moveToLogin" type="button" class="btn text-white">Move to Login Page</button></div>
+
+  <!-- <div id="landingPage" class="container-fluid">
+    <div class="row">
+        <div class="col-xs-6">
+          <img id="logoImage" src="images/Rflekt_Logo.png" alt="Website Logo">
+          
+        </div>
+        <div class="col-xs-6"> 
+          <div id="textBox"><button id="moveToLogin" type="button" class="btn text-white">Move to Login Page</button></div>
+          <button id="moveToLogin" type="button" class="btn text-white">Move to Login Page</button>
+        </div>
     </div>
-  </div>
-  </span>
+</div>
+     -->
+
+<div id="landingPage" class="container page-container">
+    <div class="split left">
+      <h1> Left page</h1>
+      <button id="moveToLogin" type="button" class="btn text-white">Move to Login Page</button>
+    </div>
+
+    <div class="split right">
+      <h1> Right page</h1>
+      <button id="moveToLogin" type="button" class="btn text-white">Move to Login Page</button>
+    </div>
+
+</div>
+
+ 
 
 
   <script src="scripts/jquery.min.js"></script>

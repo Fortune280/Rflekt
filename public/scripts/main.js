@@ -555,10 +555,10 @@ class DetailPageController {
 	}
 }
 
+//SPLIT Page
+const left = doccument.querySelector('.left');
+const right = doccument.querySelector('.right');
 
-// ProfilePageController = class extends PageController  {
-
-// }
 
 /* Main */
 function main() {

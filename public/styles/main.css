@@ -26,17 +26,30 @@ body {
         'opsz' 48
 }
 
+#logoImage{
+    position: relative;
+    left: 25px;
+    top: 50%;
+    bottom: 50%;
+    height: 400px
+}
 
 #textBox {
     background: rgba(0, 0, 0, 0.7);
     height: auto;
     /* border-radius: 30px; */
-    text-align: center;
+    /* text-align: center; */
     /* align-content: right; */
     line-height: 250px;
     color: white;
     margin: 0 auto;
+
+    position: relative;
+    right: 25px;
+    margin-right: 10px;
 }
+
+
 
 #left {
     position: absolute;
@@ -115,4 +128,23 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.leftside, .rightside {
+    height: 100vh;
+    width:100%;
+}
+
+@media screen and (min-width: 768px){
+    .leftside,.rightside {
+        height:100px
+    }
+}
+
+.leftside {
+    background: green;
+}
+
+.rightside {
+    background: rgb(39, 39, 78)
 }
