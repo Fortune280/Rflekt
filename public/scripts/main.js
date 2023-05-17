@@ -11,6 +11,7 @@
 let FB_COLLECTION_USERS = "users";
 let FB_KEY_USERNAME = "userName";
 let FB_COLLECTION_USER_HOROSCOPES = "userHoroscopes";
+let FB_KEY_NUMBER_LIST = "numberList"
 let FB_KEY_HOROSCOPE = "horoscope";
 let FB_KEY_NUMBER = "number";
 let FB_KEY_LAST_TOUCHED = "lastTouched";
@@ -90,6 +91,7 @@ class LoginPageController {
 					this._ref.doc(userCredential.user.uid).set({
 						[FB_KEY_USERNAME]: userName[1],
 						[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+						[FB_KEY_NUMBER_LIST]: ""
 					}).then(() => {
 						// Signed in, move to main page
 						window.location.href = "/main.html";
@@ -101,10 +103,10 @@ class LoginPageController {
 					var errorCode = error.code;
 					var errorMessage = error.message;
 
-					if(errorCode == "auth/invalid-email"){
+					if (errorCode == "auth/invalid-email") {
 						alert("You have entered an invalid email address!");
 						document.querySelector("#inputEmail").focus();
-					}else if(errorCode == "auth/weak-password"){
+					} else if (errorCode == "auth/weak-password") {
 						alert("Invalid password, password must be at least 6 characters");
 						document.querySelector("#inputPassword").focus();
 					}
@@ -154,6 +156,7 @@ class LoginPageController {
 					this._ref.doc(userName).set({
 						[FB_KEY_USERNAME]: userName,
 						[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+						[FB_KEY_NUMBER_LIST]: ""
 					}).then(() => {
 						window.location.href = "/main.html";
 					}).catch(function (error) {
@@ -245,11 +248,11 @@ class MainPageController {
 			console.log("Moving")
 			window.location.href = "/horoscope.html";
 		};
-		document.querySelector("#menuSignOut").onclick = (event) => {
-			console.log("Moving")
-			//TODO: Sign out the user
-			window.location.href = "/login.html";
-		};
+		// document.querySelector("#menuSignOut").onclick = (event) => {
+		// 	console.log("Moving")
+		// 	//TODO: Sign out the user
+		// 	window.location.href = "/login.html";
+		// };
 
 		console.log("SELECTED ID " + userID);
 		document.querySelector("#userNameText").innerHTML = userID;
@@ -317,17 +320,50 @@ class FbHoroscopeManager {
 		}).catch(function (error) {
 			console.error("Error adding document: ", error);
 		});
+
+		this._ref.update({
+			numberList: firebase.firestore.FieldValue.arrayUnion(number)
+
+		})
 	}
 
 	update(id, number, horoscope) { }
-	delete(id) { 
+	// delete(id) {
 
-		this._ref.collection(FB_COLLECTION_USER_HOROSCOPES).doc(id).delete()
-			.catch((error) => {
-				console.error("Error removing document: ", error);
-			})
+	// 	async function getNumber(){
 
-	}
+	// 		// let promise = new Promise((resolve, reject) =>{
+
+	// 		// })
+	// 		let fbResponse = await this._ref.collection(FB_COLLECTION_USER_HOROSCOPES).doc(id).get().then((doc) => {
+	// 			if (doc.exists) {
+	// 				console.log("Document data:", doc.data());
+	// 			} else {
+	// 				// doc.data() will be undefined in this case
+	// 				console.log("No such document!");
+	// 			}
+	// 		}).catch((error) => {
+	// 			console.log("Error getting document:", error);
+	// 		});
+
+	// 		let number = await fbResponse.json();
+
+	// 		console.log(number);
+
+
+	// 	}
+
+	// 	getNumber();
+
+	// 	// this._ref.update({
+	// 	// 	FB_KEY_NUMBER_LIST: FieldValue.arrayRemove(__)
+	// 	// });
+	// 	// this._ref.collection(FB_COLLECTION_USER_HOROSCOPES).doc(id).delete()
+	// 	// 	.catch((error) => {
+	// 	// 		console.error("Error removing document: ", error);
+	// 	// 	})
+
+	// }
 
 	get length() {
 		return this._documentSnapshots.length;
@@ -344,6 +380,8 @@ class FbHoroscopeManager {
 class ListPageController {
 	constructor(userID) {
 
+		this._ref = firebase.firestore().collection(FB_COLLECTION_USERS).doc(userID);
+
 		this.updateList();
 		fbHoroscopeManager.beginListening(this.updateList.bind(this));
 
@@ -356,31 +394,90 @@ class ListPageController {
 			document.querySelector("#inputHoroscope").focus();
 		});
 
-		document.querySelector("#submitAddHoroscope").onclick = (event) => {
+		document.querySelector("#submitAddHoroscope").onclick = async (event) => {
+
+			let count = 0;
+			let horoscopeNumber = this.generateHash(count);
+
+			const doc = await this._ref.get();
+			const list = doc.numberList;
+			// console.log("Starting Hash " + horoscopeNumber);
+			// this.checkHash(horoscopeNumber, 0);
+
+			// console.log("Ending Hash " + horoscopeApiIndex);
+
+			// console.log(horoscope, horoscopeApiIndex);
 			const horoscope = document.querySelector("#inputHoroscope").value;
-			const number = document.querySelector("#inputNumber").value;
 
-			let hash = 0;
-			for (let i = 0; i < number.length; i++) {
-				hash = (hash * 31) + (number.charCodeAt(i));
-			}
-			if (hash < 0) {
-				hash += Number.MAX_VALUE + 1;
-			}
-
-			hash = hash % 100;
-
-
-			//Use https://stackoverflow.com/questions/57626001/how-do-i-check-if-a-field-value-exists-across-all-documents-in-a-collection-in-c to prevent doubles
-			console.log(horoscope, hash);
-			fbHoroscopeManager.add(horoscope, hash);
+			fbHoroscopeManager.add(horoscope, horoscopeNumber);
 		};
 
-		document.querySelector("#deleteHoroscope").onclick = (event) => {
-			fbHoroscopeManager.delete("Tfv8JKH2VBKLqZfDaXmA");
-		}
+		// document.querySelector("#deleteHoroscope").onclick = (event) => {
+		// 	fbHoroscopeManager.delete("Tfv8JKH2VBKLqZfDaXmA");
+		// }
 
 	}
+
+	generateHash(collisionAdjust) {
+		const number = document.querySelector("#inputNumber").value;
+		const apiSize = 97;
+		let hash = 0;
+		for (let i = 0; i < number.length; i++) {
+			hash = (hash * 31) + (number.charCodeAt(i));
+		}
+		if (hash < 0) {
+			hash += Number.MAX_VALUE + 1;
+		}
+
+		hash = (hash + collisionAdjust) % apiSize;
+		return hash;
+	}
+
+	//Possible edge case where all the numbers are used
+	checkHash(horoscopeNumber, iteration) {
+		var nummers = this._ref.collection(FB_COLLECTION_USER_HOROSCOPES).where('number', '==', horoscopeNumber);
+		nummers.get()
+			.then(function (querySnapshot) {
+				console.log("Collision?" + !querySnapshot.empty)
+				if (!querySnapshot.empty) {
+					console.log("Collision, adding");
+					iteration++;
+
+					const number = document.querySelector("#inputNumber").value;
+					const apiSize = 97;
+					let hash = 0;
+					for (let i = 0; i < number.length; i++) {
+						hash = (hash * 31) + (number.charCodeAt(i));
+					}
+					if (hash < 0) {
+						hash += Number.MAX_VALUE + 1;
+					}
+
+					hash = (hash + iteration) % apiSize;
+
+					checkHash(hash, iteration);
+				} else {
+					console.log("Returning " + horoscopeNumber)
+					// return horoscopeNumber;
+					const horoscope = document.querySelector("#inputHoroscope").value;
+					fbHoroscopeManager.add(horoscope, horoscopeNumber);
+				}
+			});
+		//  console.log("Checking to see if empty " + !nummers.empty);
+		// 	console.log(nummers);
+		// if(!nummers.empty){
+		// 	// console.log(nummers);
+		// 	iteration++;
+		// 	horoscopeNumber = this.generateHash(iteration);
+		// 	this.checkHash(horoscopeNumber, iteration);
+		// }else{
+		// 	return horoscopeNumber;
+		// }
+		// this.generateHash();
+
+	}
+
+
 
 	updateList() {
 
@@ -448,10 +545,10 @@ class FbSingleHoroscopeManager {
 		this._documentSnapshot = {};
 		this._unsubscribe = null;
 		this._ref = firebase.firestore().collection(FB_COLLECTION_USERS).doc(userID).collection(FB_COLLECTION_USER_HOROSCOPES).doc(horoscopeId);
+		this._userRef = firebase.firestore().collection(FB_COLLECTION_USERS).doc(userID);
 		console.log("in singlehoroscope constructor");
 		console.log("horo id:" + horoscopeId);
 		console.log("USER ID: " + userID);
-		// console.log("this._ref = " + this._ref.get(FB_KEY_HOROSCOPE));
 	}
 
 	beginListening(changeListener) {
@@ -472,7 +569,7 @@ class FbSingleHoroscopeManager {
 		this._unsubscribe();
 	}
 
-	
+
 	get horoscope() {
 		return this._document.get(FB_KEY_HOROSCOPE);
 	}
@@ -494,6 +591,25 @@ class FbSingleHoroscopeManager {
 		});
 	}
 	delete() {
+		// var data = this._ref.get().then((doc) => {
+		// 	if (doc.exists) {
+		// 		console.log("Document data:", doc.data());
+		// 		return doc.data();
+		// 	} else {
+		// 		// doc.data() will be undefined in this case
+		// 		console.log("No such document!");
+		// 	}
+		// }).catch((error) => {
+		// 	console.log("Error getting document:", error);
+		// });
+		// var number = data.number;	
+		// let number = this._ref.get(FB_KEY_NUMBER);
+		// console.log("Deleting " +  number())
+
+		// this._userRef.update({
+		// 	numberList: firebase.firestore.FieldValue.arrayRemove( number())
+
+		// })
 		return this._ref.delete();
 	}
 }
@@ -521,12 +637,12 @@ class DetailPageController {
 			.then(response => response.json())
 			.then(text => {
 				const newList = htmlToElement("<div id='cardHoroscope'></div>")
-					console.log("HOROSCOPE " + fbSingleHoroscopeManager.horoscope + " Number " + fbSingleHoroscopeManager.number + " Value " + text[fbSingleHoroscopeManager.number].horoscopeEntry)
+				console.log("HOROSCOPE " + fbSingleHoroscopeManager.horoscope + " Number " + fbSingleHoroscopeManager.number + " Value " + text[fbSingleHoroscopeManager.number].horoscopeEntry)
 
-					const newCard = this._createCard(fbSingleHoroscopeManager.horoscope, text[fbSingleHoroscopeManager.number].horoscopeEntry);
+				const newCard = this._createCard(fbSingleHoroscopeManager.horoscope, text[fbSingleHoroscopeManager.number].horoscopeEntry);
 
-					newList.appendChild(newCard);
-				
+				newList.appendChild(newCard);
+
 
 
 
