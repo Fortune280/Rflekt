@@ -328,44 +328,6 @@ class FbHoroscopeManager {
 		})
 	}
 
-	update(id, number, horoscope) { }
-	// delete(id) {
-
-	// 	async function getNumber(){
-
-	// 		// let promise = new Promise((resolve, reject) =>{
-
-	// 		// })
-	// 		let fbResponse = await this._ref.collection(FB_COLLECTION_USER_HOROSCOPES).doc(id).get().then((doc) => {
-	// 			if (doc.exists) {
-	// 				console.log("Document data:", doc.data());
-	// 			} else {
-	// 				// doc.data() will be undefined in this case
-	// 				console.log("No such document!");
-	// 			}
-	// 		}).catch((error) => {
-	// 			console.log("Error getting document:", error);
-	// 		});
-
-	// 		let number = await fbResponse.json();
-
-	// 		console.log(number);
-
-
-	// 	}
-
-	// 	getNumber();
-
-	// 	// this._ref.update({
-	// 	// 	FB_KEY_NUMBER_LIST: FieldValue.arrayRemove(__)
-	// 	// });
-	// 	// this._ref.collection(FB_COLLECTION_USER_HOROSCOPES).doc(id).delete()
-	// 	// 	.catch((error) => {
-	// 	// 		console.error("Error removing document: ", error);
-	// 	// 	})
-
-	// }
-
 	get length() {
 		return this._documentSnapshots.length;
 	}
@@ -487,8 +449,6 @@ class ListPageController {
 
 }
 
-
-//TODO: IMPLEMENT
 class FbSingleHoroscopeManager {
 
 	constructor(horoscopeId, userID) {
@@ -564,7 +524,6 @@ class FbSingleHoroscopeManager {
 	}
 }
 
-//TODO: IMPLEMENT
 class DetailPageController {
 	constructor() {
 		fbSingleHoroscopeManager.beginListening(this.updateView.bind(this));
@@ -592,9 +551,6 @@ class DetailPageController {
 				const newCard = this._createCard(fbSingleHoroscopeManager.horoscope, text[fbSingleHoroscopeManager.number].horoscopeEntry);
 
 				newList.appendChild(newCard);
-
-
-
 
 				const oldList = document.querySelector("#cardHoroscope");
 
@@ -624,14 +580,43 @@ class DetailPageController {
 class EightballPageController {
 
 	constructor() {
+		this.getEightBallResponse();
+	}
 
+	getEightBallResponse() {
+		document.querySelector("#submitQuestionButton").onclick = (event) => {
+
+			//API GET
+			fetch(EIGHTBALL_API_URL)
+				.then(response => {
+					if (response.ok) {
+						return response;
+					}
+					throw Error(response.statusText);
+				})
+				.then(response => response.json())
+				.then(text => {
+					let responseNumber = Math.floor(Math.random() * 20) + 1;
+					let responseText = text[responseNumber].answer;
+
+					if(document.querySelector("#reponseText").textContent == responseText){
+						 responseNumber = Math.floor(Math.random() * 20) + 1;
+						 responseText = text[responseNumber].answer;
+					}	
+
+					document.querySelector("#reponseText").textContent = responseText;
+
+				})
+				.catch(error => console.log('There was an error:', error));
+
+		};
 	}
 
 
 }
 //SPLIT Page
-const left = doccument.querySelector('.left');
-const right = doccument.querySelector('.right');
+// const left = doccument.querySelector('.left');
+// const right = doccument.querySelector('.right');
 
 
 /* Main */
