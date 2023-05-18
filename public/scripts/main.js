@@ -658,6 +658,7 @@ b3.addEventListener('click', ()=>{
 });
 
 //END SPLIT PAGE
+
 /* Main */
 function main() {
 	console.log("Ready");
