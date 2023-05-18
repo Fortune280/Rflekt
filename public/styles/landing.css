@@ -23,13 +23,60 @@
 }
 
 h1{
-    font-size: 3rem;
+    font-size: 2rem;
     color:aliceblue;
     position: absolute;
     left:50%;
     top:35%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) ;
     white-space: nowrap;
+    font-family: "Montserrat Medium";
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateX(-50%) translate3d(0,40px,0)
+    }
+
+    to {
+        transform: translateX(-50%) translate3d(0,0,0);
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes fadeInUp {
+    from {
+        transform:  translateX(-50%) translate3d(0,40px,0)
+    }
+
+    to {
+        transform: translateX(-50%) translate3d(0,0,0);
+        opacity: 1
+    }
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-fill-mode: both
+}
+
+.animatedFadeInUp {
+    opacity: 0
+}
+
+.fadeInUp {
+    opacity: 0;
+    animation-name: fadeInUp;
+    -webkit-animation-name: fadeInUp;
+}
+
+
+span {
+    display: inline-block;
+    opacity: 0;
+    filter: blur(4px);
 }
 
 p1{
