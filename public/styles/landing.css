@@ -27,7 +27,7 @@ h1{
     color:aliceblue;
     position: absolute;
     left:50%;
-    top:35%;
+    top:38%;
     transform: translateX(-50%) ;
     white-space: nowrap;
     font-family: "Montserrat Medium";
@@ -80,11 +80,11 @@ span {
 }
 
 p1{
-    font-size: 1rem;
     color:aliceblue;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     position: absolute;
-    width:240px;
+    width:350px;
+    font-size: 1.3rem;
     left:50%;
     top:50%;
     transform: translateX(-50%); 
@@ -114,7 +114,7 @@ p1{
     left:50%;
     top:70%;
     height: 2.5rem;
-    padding-top: 0.5rem;
+    padding-top: 0.7rem;
     width:15rem;
     text-align: center;
     color:white;
@@ -131,9 +131,9 @@ p1{
     top:5%;
     border:none;
     width:5rem;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color:#fff;
-    left:25%;
+    left:15%;
    
 }
 
@@ -142,8 +142,8 @@ p1{
     border:none;
     width:5rem;
     color:#fff;
-    font-size: 0.8rem;
-    left:50%;
+    font-size: 0.7rem;
+    left:40%;
 
 }
 
@@ -152,8 +152,18 @@ p1{
     border:none;
     width:5rem;
     color:#fff;
-    font-size: 0.8rem;
-    left: 75%;
+    font-size: 0.7rem;
+    left: 65%;
+    
+}
+
+#about3 {
+    top:5%;
+    border:none;
+    width:5rem;
+    color:#fff;
+    font-size: 0.7rem;
+    left: 90%;
     
 }
 .split.left .button:hover{
@@ -261,7 +271,14 @@ p1{
 @media (max-width:800px){
     h1{
         font-size:2rem;
+        top:40%;
     }
+
+    p1{
+        width:240px;
+        font-size: 1rem;
+    }
+
     .button{
         width:12rem;
     }
@@ -276,7 +293,7 @@ p1{
         top: 30%;
     }
     h1{
-        top:35%;
+        top:37%;
     }
 }
 

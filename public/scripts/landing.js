@@ -24,6 +24,8 @@
 		const b1 = document.querySelector('#about');
 		const b2 = document.querySelector('#about1');
 		const b3 = document.querySelector('#about2');
+        const b4 = document.querySelector('#about3');
+
 
         function htmlToElement(html) {
             var template = document.createElement('template');
@@ -52,9 +54,12 @@
 
 		});
 
-        function _createtext(text) {
-            console.log(text);
+        b4.addEventListener('click', () => {
+            generateContent( "Join Us","put some field here");
+		});
 
+        // dynamic content generation
+        function _createtext(text) {
             return htmlToElement(`
             <p1 id="content" class="animated animatedFadeInUp fadeInUp"> ${text}</p1>
           `);
@@ -63,7 +68,7 @@
         };
 
         function _createheader(header) {
-            console.log(header);
+            console.log("displaying: " + header);
 
             return htmlToElement(`
             <h1 id="header"  class="animated animatedFadeInUp fadeInUp">${header}</h1>
