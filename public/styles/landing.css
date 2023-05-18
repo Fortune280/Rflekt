@@ -1,12 +1,12 @@
 /* SPLIT SCREEN */
 
 :root {
-    --container-bg-color: rgba(0,0,0,0.6);
+    --container-bg-color: rgba(0,0,0,0.5);
     --left-bg-color: rgba(0,0,0,0.6);
     --speed: 600ms;
     --left-button-hover-color:rgba(255, 255, 255, 0.3);
 
-    --right-bg-color: rgba(0, 0, 0, 0.85);
+    --right-bg-color: rgba(0, 0, 0, 0.75);
     --right-button-hover-color:rgba(255, 255, 255, 0.3);
 
     --hover-width:75%;
@@ -203,7 +203,7 @@ p1{
 }
 
 #landingbody {
-    background: url("..\\images\\Wet-Leaves.jpg") center no-repeat;
+    background: url("..\\images\\galaxy.jpg") center no-repeat;
 }
 
 .split{
