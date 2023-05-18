@@ -28,43 +28,10 @@ body {
 
 
 
-#textBox {
-    background: rgba(0, 0, 0, 0.7);
-    height: auto;
-    /* border-radius: 30px; */
-    /* text-align: center; */
-    /* align-content: right; */
-    line-height: 250px;
-    color: white;
-    margin: 0 auto;
-
-    position: relative;
-    right: 25px;
-    margin-right: 10px;
-}
 
 
 
-/* #left {
-    position: absolute;
-    text-align: center;
-    top: 50%;
-    transform: translate(0, -50%);
-}
 
-#right {
-    position: absolute;
-    text-align: right;
-} */
-
-
-/* .container page-container {
-    position: relative;
-    top: 50%;
-    text-align: center;
-    transform: translate(0, -50%);
-    padding: 1rem;
-     }  */
 
 /* SPLIT SCREEN */
 

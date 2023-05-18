@@ -21,6 +21,8 @@ let fbSingleHoroscopeManager = null;
 let fbAuthManager = null;
 var loggedInUserID = null;
 const API_URL = "https://645959df8badff578e0b6b2b.mockapi.io/api/horoscope";
+const EIGHTBALL_API_URL = "https://645959df8badff578e0b6b2b.mockapi.io/api/eightball"
+//id, answer
 
 function htmlToElement(html) {
 	var template = document.createElement('template');
@@ -248,11 +250,10 @@ class MainPageController {
 			console.log("Moving")
 			window.location.href = "/horoscope.html";
 		};
-		// document.querySelector("#menuSignOut").onclick = (event) => {
-		// 	console.log("Moving")
-		// 	//TODO: Sign out the user
-		// 	window.location.href = "/login.html";
-		// };
+		document.querySelector("#menuMoveToEightballPage").onclick = (event) => {
+			console.log("Moving")
+			window.location.href = "/eightball.html";
+		};
 
 		console.log("SELECTED ID " + userID);
 		document.querySelector("#userNameText").innerHTML = userID;
@@ -327,44 +328,6 @@ class FbHoroscopeManager {
 		})
 	}
 
-	update(id, number, horoscope) { }
-	// delete(id) {
-
-	// 	async function getNumber(){
-
-	// 		// let promise = new Promise((resolve, reject) =>{
-
-	// 		// })
-	// 		let fbResponse = await this._ref.collection(FB_COLLECTION_USER_HOROSCOPES).doc(id).get().then((doc) => {
-	// 			if (doc.exists) {
-	// 				console.log("Document data:", doc.data());
-	// 			} else {
-	// 				// doc.data() will be undefined in this case
-	// 				console.log("No such document!");
-	// 			}
-	// 		}).catch((error) => {
-	// 			console.log("Error getting document:", error);
-	// 		});
-
-	// 		let number = await fbResponse.json();
-
-	// 		console.log(number);
-
-
-	// 	}
-
-	// 	getNumber();
-
-	// 	// this._ref.update({
-	// 	// 	FB_KEY_NUMBER_LIST: FieldValue.arrayRemove(__)
-	// 	// });
-	// 	// this._ref.collection(FB_COLLECTION_USER_HOROSCOPES).doc(id).delete()
-	// 	// 	.catch((error) => {
-	// 	// 		console.error("Error removing document: ", error);
-	// 	// 	})
-
-	// }
-
 	get length() {
 		return this._documentSnapshots.length;
 	}
@@ -395,26 +358,21 @@ class ListPageController {
 		});
 
 		document.querySelector("#submitAddHoroscope").onclick = async (event) => {
-
 			let count = 0;
 			let horoscopeNumber = this.generateHash(count);
 
 			const doc = await this._ref.get();
-			const list = doc.numberList;
-			// console.log("Starting Hash " + horoscopeNumber);
-			// this.checkHash(horoscopeNumber, 0);
+			const list = doc.data().numberList;
 
-			// console.log("Ending Hash " + horoscopeApiIndex);
+			while (list.includes(horoscopeNumber)) {
+				count++;
+				horoscopeNumber = this.generateHash(count);
+			}
 
-			// console.log(horoscope, horoscopeApiIndex);
 			const horoscope = document.querySelector("#inputHoroscope").value;
 
 			fbHoroscopeManager.add(horoscope, horoscopeNumber);
 		};
-
-		// document.querySelector("#deleteHoroscope").onclick = (event) => {
-		// 	fbHoroscopeManager.delete("Tfv8JKH2VBKLqZfDaXmA");
-		// }
 
 	}
 
@@ -432,52 +390,6 @@ class ListPageController {
 		hash = (hash + collisionAdjust) % apiSize;
 		return hash;
 	}
-
-	//Possible edge case where all the numbers are used
-	checkHash(horoscopeNumber, iteration) {
-		var nummers = this._ref.collection(FB_COLLECTION_USER_HOROSCOPES).where('number', '==', horoscopeNumber);
-		nummers.get()
-			.then(function (querySnapshot) {
-				console.log("Collision?" + !querySnapshot.empty)
-				if (!querySnapshot.empty) {
-					console.log("Collision, adding");
-					iteration++;
-
-					const number = document.querySelector("#inputNumber").value;
-					const apiSize = 97;
-					let hash = 0;
-					for (let i = 0; i < number.length; i++) {
-						hash = (hash * 31) + (number.charCodeAt(i));
-					}
-					if (hash < 0) {
-						hash += Number.MAX_VALUE + 1;
-					}
-
-					hash = (hash + iteration) % apiSize;
-
-					checkHash(hash, iteration);
-				} else {
-					console.log("Returning " + horoscopeNumber)
-					// return horoscopeNumber;
-					const horoscope = document.querySelector("#inputHoroscope").value;
-					fbHoroscopeManager.add(horoscope, horoscopeNumber);
-				}
-			});
-		//  console.log("Checking to see if empty " + !nummers.empty);
-		// 	console.log(nummers);
-		// if(!nummers.empty){
-		// 	// console.log(nummers);
-		// 	iteration++;
-		// 	horoscopeNumber = this.generateHash(iteration);
-		// 	this.checkHash(horoscopeNumber, iteration);
-		// }else{
-		// 	return horoscopeNumber;
-		// }
-		// this.generateHash();
-
-	}
-
-
 
 	updateList() {
 
@@ -537,8 +449,6 @@ class ListPageController {
 
 }
 
-
-//TODO: IMPLEMENT
 class FbSingleHoroscopeManager {
 
 	constructor(horoscopeId, userID) {
@@ -614,7 +524,6 @@ class FbSingleHoroscopeManager {
 	}
 }
 
-//TODO: IMPLEMENT
 class DetailPageController {
 	constructor() {
 		fbSingleHoroscopeManager.beginListening(this.updateView.bind(this));
@@ -643,9 +552,6 @@ class DetailPageController {
 
 				newList.appendChild(newCard);
 
-
-
-
 				const oldList = document.querySelector("#cardHoroscope");
 
 				oldList.removeAttribute("id");
@@ -671,6 +577,43 @@ class DetailPageController {
 	}
 }
 
+class EightballPageController {
+
+	constructor() {
+		this.getEightBallResponse();
+	}
+
+	getEightBallResponse() {
+		document.querySelector("#submitQuestionButton").onclick = (event) => {
+
+			//API GET
+			fetch(EIGHTBALL_API_URL)
+				.then(response => {
+					if (response.ok) {
+						return response;
+					}
+					throw Error(response.statusText);
+				})
+				.then(response => response.json())
+				.then(text => {
+					let responseNumber = Math.floor(Math.random() * 20) + 1;
+					let responseText = text[responseNumber].answer;
+
+					if(document.querySelector("#reponseText").textContent == responseText){
+						 responseNumber = Math.floor(Math.random() * 20) + 1;
+						 responseText = text[responseNumber].answer;
+					}	
+
+					document.querySelector("#reponseText").textContent = responseText;
+
+				})
+				.catch(error => console.log('There was an error:', error));
+
+		};
+	}
+
+
+}
 //SPLIT Page
 const left = document.querySelector('.left');
 const right = document.querySelector('.right');
@@ -751,6 +694,8 @@ function main() {
 				window.location.href = "/"; // Go back to the home page (ListPage)
 			}
 
+		} else if (document.querySelector("#eightballPage")) {
+			new EightballPageController();
 		}
 	});
 
