@@ -36,12 +36,12 @@ body {
 /* SPLIT SCREEN */
 
 :root {
-    --container-bg-color: rgba(0,0,0,0.1);
-    --left-bg-color: rgba(0,0,0,0.5);
+    --container-bg-color: rgba(0,0,0,0.6);
+    --left-bg-color: rgba(0,0,0,0.6);
     --speed: 600ms;
     --left-button-hover-color:rgba(255, 255, 255, 0.3);
 
-    --right-bg-color: rgba(0, 0, 0, 0.8);
+    --right-bg-color: rgba(0, 0, 0, 0.85);
     --right-button-hover-color:rgba(255, 255, 255, 0.3);
 
     --hover-width:75%;
