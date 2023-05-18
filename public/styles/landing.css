@@ -1,12 +1,12 @@
 /* SPLIT SCREEN */
 
 :root {
-    --container-bg-color: rgba(0,0,0,0.5);
+    --container-bg-color: rgba(0,0,0,0.55);
     --left-bg-color: rgba(0,0,0,0.6);
     --speed: 600ms;
     --left-button-hover-color:rgba(255, 255, 255, 0.3);
 
-    --right-bg-color: rgba(0, 0, 0, 0.75);
+    --right-bg-color: rgba(0, 0, 0, 0.55);
     --right-button-hover-color:rgba(255, 255, 255, 0.3);
 
     --hover-width:75%;
@@ -96,7 +96,7 @@ p1{
 #logoImage{
     position: absolute;
     left: 50%;
-    top: 10%;
+    top: 10px;
     width:450px;
 
     transform:translateX(-50%);
@@ -232,6 +232,9 @@ p1{
     right:0;
     /* background: url("..\\images\\Wet-Leaves.jpg") center center no-repeat; */
     background-size:cover;
+
+    backdrop-filter: blur(0.4rem);
+
 
 }
 
