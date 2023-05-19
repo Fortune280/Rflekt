@@ -217,7 +217,7 @@ function _createheader(header) {
 	console.log("displaying: " + header);
 
 	return htmlToElement(`
-            <h1 id="header"  class="animated animatedFadeInUp fadeInUp">${header}</h1>
+            <h1 id="${header}"  class="animated animatedFadeInUp fadeInUp">${header}</h1>
           `);
 
 
