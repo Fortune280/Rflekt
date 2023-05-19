@@ -48,20 +48,69 @@
 
 
       <main class="bmd-layout-content">
-        <div id="mainPage"
-          class="container page-container aligncenter animated animatedFadeInUp fadeInUp">
-
-          <div id="textBox" class=" animated animatedFadeInUp fadeInUp">
-            <div>
-              hi
-            </div>
+        <div id="mainPage" class="container-fluid justify-content-center">
+          <p1 id="npcDialogue" class="animated animatedFadeInUp fadeInUp">
+            Greetings, weary traveler, and welcome to the realm of ethereal wonders. 
+            I am Genevieve Persephone Thornwood, also known as The Star Child. 
+            'Tis a pleasure to make thine acquaintance amidst the cosmic tapestry. 
+            Pray tell, what brings thee to seek the guidance of the Oracle?
+          </p1>
+          
+          <row class="row">
             
+            <button class="btn button" data-toggle="modal" data-target="#ask">Ask Question</button>
 
 
+            <div class="modal fade" id="ask" tabindex="-1" role="dialog">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">What is troubling your mind?</h5>
+                  </div>
+                  <div class="modal-body">
+
+                    <div class="form-group">
+                      <label for="inputName" class="bmd-label-floating">Tell me thy name</label>
+                      <input type="text" class="form-control" id="inputName">
+                    </div>
+                    <div class="form-group">
+                      <label for="inputHoroscope" class="bmd-label-floating">Star Sign</label>
+                      <select class="form-select" aria-label="Default select example" id="inputSign">
+                        <option selected> Your Cosmic Insignia</option>
+                        <option value="Aries"> <strong>Aries</strong> </option>
+                        <option value="Taurus">Taurus</option>
+                        <option value="Gemini">Gemini</option>
+                        <option value="Cancer">Cancer</option>
+                        <option value="Leo">Leo</option>
+                        <option value="Virgo">Virgo</option>
+                        <option value="Libra">Libra</option>
+                        <option value="Scorpio">Scorpio</option>
+                        <option value="Sagitarius">Sagittarius</option>
+                        <option value="Capricorn">Capricorn</option>
+                        <option value="Aquarius">Aquarius</option>
+                        <option value="Pices">Pices</option>
+                      </select>
+          
+                    </div>
+                    <div class="form-group">
+                      <label for="inputQuestion" class="bmd-label-floating">Ask your question</label>
+                      <input type="text" class="form-control" id="inputQuestion">
+                    </div>
 
 
+          
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
+                    <button type="button" id="submitAsk" class="btn btn-primary" data-dismiss="modal">ASK</button>
+                  </div>
+                </div>
+              </div>
+          
+            </div>
 
-          </div>
+          </row>
+          
         </div>
 
         </div>
@@ -83,8 +132,9 @@
   <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
   <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="scripts/chat.js"></script>
-  <script src="scripts/main.js"></script>
+  <!-- <script type="module" src="scripts/gpt.mjs"></script> -->
+  <script type="module" src="scripts/chat.js"></script>
+  <script type="module" src="scripts/main.js"></script>
 </body>
 
 </html>
