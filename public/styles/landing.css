@@ -24,11 +24,11 @@
 
 h1{
     /* Semi Bold */
-    font-size: 2rem;
+    font-size: 3.5rem;
     color:aliceblue;
     position: absolute;
     left:50%;
-    top:38%;
+    top:10%;
     transform: translateX(-50%) ;
     white-space: nowrap;
     font-family: "Montserrat Medium";
@@ -55,6 +55,8 @@ h1{
         opacity: 1
     }
 }
+
+
 
 .animated {
     animation-duration: 1s;
@@ -98,15 +100,17 @@ p1{
 #logoImage{
     position: absolute;
     left: 50%;
-    top: 10px;
+    top: 25%;
     width:450px;
 
     transform:translateX(-50%);
 }
 #rightbar{
     right:5%;
-    top:10%;
+    top:5%;
 }
+
+
 
 #createAccountButton{
     top: 210px;
