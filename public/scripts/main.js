@@ -41,186 +41,186 @@ async function getApi(url) {
 	return (data);
 }
 
-class LandingPageController {
+// class LandingPageController {
 
-	constructor() {
-		document.querySelector("#moveToLogin").onclick = (event) => {
-			console.log("Moving")
-			window.location.href = "/login.html";
-		};
+// 	constructor() {
+// 		document.querySelector("#moveToLogin").onclick = (event) => {
+// 			console.log("Moving")
+// 			window.location.href = "/login.html";
+// 		};
 
-	}
+// 	}
 
-}
+// }
 
-class LoginPageController {
+// class LoginPageController {
 
-	constructor() {
-
-
-
-		document.querySelector("#moveToMain").onclick = (event) => {
-			console.log("Moving")
-			window.location.href = "/main.html";
-		};
-
-		this.createAccount();
-		this.logIn();
-		this.signInRose();
-		// this.signInAnonymously();
-
-		console.log("LoginPageConstructor")
-	}
-
-	createAccount() {
-
-		document.querySelector("#createAccountButton").onclick = (event) => {
-			const inputEmailEl = document.querySelector("#inputEmail");
-			const inputPasswordEl = document.querySelector("#inputPassword");
-
-			//Uses regex to get username
-			const re = new RegExp("(.+)@");
-			const userName = re.exec(inputEmailEl.value);
-			// console.log("Mathches:" + matches[1]);
-
-
-			console.log(`Create account for email: ${inputEmailEl.value}  password: ${inputPasswordEl.value}`);
-			firebase.auth().createUserWithEmailAndPassword(inputEmailEl.value, inputPasswordEl.value)
-				.then((userCredential) => {
-					console.log("CREATED USER " + userCredential);
-
-					//Access user, create new information
-					this._ref = firebase.firestore().collection(FB_COLLECTION_USERS);
-					this._ref.doc(userCredential.user.uid).set({
-						[FB_KEY_USERNAME]: userName[1],
-						[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
-						[FB_KEY_NUMBER_LIST]: ""
-					}).then(() => {
-						// Signed in, move to main page
-						window.location.href = "/main.html";
-					}).catch(function (error) {
-						console.error("Error adding document: ", error);
-					});
-				})
-				.catch((error) => {
-					var errorCode = error.code;
-					var errorMessage = error.message;
-
-					if (errorCode == "auth/invalid-email") {
-						alert("You have entered an invalid email address!");
-						document.querySelector("#inputEmail").focus();
-					} else if (errorCode == "auth/weak-password") {
-						alert("Invalid password, password must be at least 6 characters");
-						document.querySelector("#inputPassword").focus();
-					}
-					console.log("Create user error", errorCode, errorMessage);
-				});
-		};
-
-	}
-
-	logIn() {
-
-		document.querySelector("#logInButton").onclick = (event) => {
-			const inputEmailEl = document.querySelector("#inputEmail");
-			const inputPasswordEl = document.querySelector("#inputPassword");
-
-			console.log(`Log in to existing account for email: ${inputEmailEl.value}  password: ${inputPasswordEl.value}`);
-			firebase.auth().signInWithEmailAndPassword(inputEmailEl.value, inputPasswordEl.value)
-				.then(() => {
-					window.location.href = "/main.html";
-				})
-				.catch((error) => {
-					var errorCode = error.code;
-					var errorMessage = error.message;
-					console.log("Log in user error", errorCode, errorMessage);
-				});
-		};
-
-	}
-
-	// 9b90da36-b490-4ed2-b41c-1c18e1c77bfb
-	signInRose() {
-
-		document.querySelector("#logInRoseButton").onclick = (event) => {
-			console.log("Logging in with Rosefire")
-			Rosefire.signIn("9b90da36-b490-4ed2-b41c-1c18e1c77bfb", (err, rfUser) => {
-				if (err) {
-					console.log("Rosefire error!", err);
-					return;
-				}
-				console.log("Rosefire success!", rfUser);
-				firebase.auth().signInWithCustomToken(rfUser.token).then((rfUser) => {
-
-					//Create new information for user
-					this._ref = firebase.firestore().collection(FB_COLLECTION_USERS);
-					console.log("User Name " + rfUser.user.uid);
-					let userName = rfUser.user.uid;
-					this._ref.doc(userName).set({
-						[FB_KEY_USERNAME]: userName,
-						[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
-						[FB_KEY_NUMBER_LIST]: ""
-					}).then(() => {
-						window.location.href = "/main.html";
-					}).catch(function (error) {
-						console.error("Error adding document: ", error);
-					});
-
-				}).catch((error) => {
-					if (error.code === 'auth/invalid-custom-token') {
-						console.log("The token you provided is not valid.");
-					} else {
-						console.log("signInWithCustomToken error", error.message);
-					}
-				});
-			});
-		}
-
-	}
-
-	// TODO: Says "This operation is restricted to administrators only.""
-	signInAnonymously() {
-		document.querySelector("#anonymousAuthButton").onclick = (event) => {
-			console.log(`Log in via Anonymous auth`);
-			firebase.auth().signInAnonymously()
-				.then(() => {
-					window.location.href = "/main.html";
-				})
-				.catch((error) => {
-					var errorCode = error.code;
-					var errorMessage = error.message;
-					console.log("Anonymous Login error", errorCode, errorMessage);
-					// ...
-				});
-		};
-	}
+// 	constructor() {
 
 
 
-	onAuthStateChanged() {
-		firebase.auth().onAuthStateChanged((user) => {
-			if (user) {
-				var uid = user.uid;
-				var displayName = user.displayName;
-				var email = user.email;
-				var emailVerified = user.emailVerified;
-				var photoURL = user.photoURL;
-				var isAnonymous = user.isAnonymous;
-				var providerData = user.providerData;
-				console.log("Signed in", uid);
-				console.log('displayName :>> ', displayName);
-				console.log('email :>> ', email);
-				console.log('photoURL :>> ', photoURL);
-				console.log('isAnonymous :>> ', isAnonymous);
-				console.log('uid :>> ', uid);
+// 		document.querySelector("#moveToMain").onclick = (event) => {
+// 			console.log("Moving")
+// 			window.location.href = "/main.html";
+// 		};
 
-			} else {
-				console.log("No user is signed in.");
-			}
-		});
+// 		this.createAccount();
+// 		this.logIn();
+// 		this.signInRose();
+// 		// this.signInAnonymously();
 
-	}
-}
+// 		console.log("LoginPageConstructor")
+// 	}
+
+// 	createAccount() {
+
+// 		document.querySelector("#createAccountButton").onclick = (event) => {
+// 			const inputEmailEl = document.querySelector("#inputEmail");
+// 			const inputPasswordEl = document.querySelector("#inputPassword");
+
+// 			//Uses regex to get username
+// 			const re = new RegExp("(.+)@");
+// 			const userName = re.exec(inputEmailEl.value);
+// 			// console.log("Mathches:" + matches[1]);
+
+
+// 			console.log(`Create account for email: ${inputEmailEl.value}  password: ${inputPasswordEl.value}`);
+// 			firebase.auth().createUserWithEmailAndPassword(inputEmailEl.value, inputPasswordEl.value)
+// 				.then((userCredential) => {
+// 					console.log("CREATED USER " + userCredential);
+
+// 					//Access user, create new information
+// 					this._ref = firebase.firestore().collection(FB_COLLECTION_USERS);
+// 					this._ref.doc(userCredential.user.uid).set({
+// 						[FB_KEY_USERNAME]: userName[1],
+// 						[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+// 						[FB_KEY_NUMBER_LIST]: ""
+// 					}).then(() => {
+// 						// Signed in, move to main page
+// 						window.location.href = "/main.html";
+// 					}).catch(function (error) {
+// 						console.error("Error adding document: ", error);
+// 					});
+// 				})
+// 				.catch((error) => {
+// 					var errorCode = error.code;
+// 					var errorMessage = error.message;
+
+// 					if (errorCode == "auth/invalid-email") {
+// 						alert("You have entered an invalid email address!");
+// 						document.querySelector("#inputEmail").focus();
+// 					} else if (errorCode == "auth/weak-password") {
+// 						alert("Invalid password, password must be at least 6 characters");
+// 						document.querySelector("#inputPassword").focus();
+// 					}
+// 					console.log("Create user error", errorCode, errorMessage);
+// 				});
+// 		};
+
+// 	}
+
+// 	logIn() {
+
+// 		document.querySelector("#logInButton").onclick = (event) => {
+// 			const inputEmailEl = document.querySelector("#inputEmail");
+// 			const inputPasswordEl = document.querySelector("#inputPassword");
+
+// 			console.log(`Log in to existing account for email: ${inputEmailEl.value}  password: ${inputPasswordEl.value}`);
+// 			firebase.auth().signInWithEmailAndPassword(inputEmailEl.value, inputPasswordEl.value)
+// 				.then(() => {
+// 					window.location.href = "/main.html";
+// 				})
+// 				.catch((error) => {
+// 					var errorCode = error.code;
+// 					var errorMessage = error.message;
+// 					console.log("Log in user error", errorCode, errorMessage);
+// 				});
+// 		};
+
+// 	}
+
+// 	// 9b90da36-b490-4ed2-b41c-1c18e1c77bfb
+// 	signInRose() {
+
+// 		document.querySelector("#logInRoseButton").onclick = (event) => {
+// 			console.log("Logging in with Rosefire")
+// 			Rosefire.signIn("9b90da36-b490-4ed2-b41c-1c18e1c77bfb", (err, rfUser) => {
+// 				if (err) {
+// 					console.log("Rosefire error!", err);
+// 					return;
+// 				}
+// 				console.log("Rosefire success!", rfUser);
+// 				firebase.auth().signInWithCustomToken(rfUser.token).then((rfUser) => {
+
+// 					//Create new information for user
+// 					this._ref = firebase.firestore().collection(FB_COLLECTION_USERS);
+// 					console.log("User Name " + rfUser.user.uid);
+// 					let userName = rfUser.user.uid;
+// 					this._ref.doc(userName).set({
+// 						[FB_KEY_USERNAME]: userName,
+// 						[FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+// 						[FB_KEY_NUMBER_LIST]: ""
+// 					}).then(() => {
+// 						window.location.href = "/main.html";
+// 					}).catch(function (error) {
+// 						console.error("Error adding document: ", error);
+// 					});
+
+// 				}).catch((error) => {
+// 					if (error.code === 'auth/invalid-custom-token') {
+// 						console.log("The token you provided is not valid.");
+// 					} else {
+// 						console.log("signInWithCustomToken error", error.message);
+// 					}
+// 				});
+// 			});
+// 		}
+
+// 	}
+
+// 	// // TODO: Says "This operation is restricted to administrators only.""
+// 	// signInAnonymously() {
+// 	// 	document.querySelector("#anonymousAuthButton").onclick = (event) => {
+// 	// 		console.log(`Log in via Anonymous auth`);
+// 	// 		firebase.auth().signInAnonymously()
+// 	// 			.then(() => {
+// 	// 				window.location.href = "/main.html";
+// 	// 			})
+// 	// 			.catch((error) => {
+// 	// 				var errorCode = error.code;
+// 	// 				var errorMessage = error.message;
+// 	// 				console.log("Anonymous Login error", errorCode, errorMessage);
+// 	// 				// ...
+// 	// 			});
+// 	// 	};
+// 	// }
+
+
+
+// 	// onAuthStateChanged() {
+// 	// 	firebase.auth().onAuthStateChanged((user) => {
+// 	// 		if (user) {
+// 	// 			var uid = user.uid;
+// 	// 			var displayName = user.displayName;
+// 	// 			var email = user.email;
+// 	// 			var emailVerified = user.emailVerified;
+// 	// 			var photoURL = user.photoURL;
+// 	// 			var isAnonymous = user.isAnonymous;
+// 	// 			var providerData = user.providerData;
+// 	// 			console.log("Signed in", uid);
+// 	// 			console.log('displayName :>> ', displayName);
+// 	// 			console.log('email :>> ', email);
+// 	// 			console.log('photoURL :>> ', photoURL);
+// 	// 			console.log('isAnonymous :>> ', isAnonymous);
+// 	// 			console.log('uid :>> ', uid);
+
+// 	// 		} else {
+// 	// 			console.log("No user is signed in.");
+// 	// 		}
+// 	// 	});
+
+// 	// }
+// }
 
 class FbAuthManager {
 	constructor() {
@@ -256,8 +256,17 @@ class MainPageController {
 			window.location.href = "/eightball.html";
 		};
 
-		console.log("SELECTED ID " + userID);
-		document.querySelector("#userNameText").innerHTML = userID;
+		document.querySelector("#moveToHoroscopePageButton").onclick = (event) => {
+			console.log("Moving")
+			window.location.href = "/horoscope.html";
+		};
+		document.querySelector("#moveToEightballButton").onclick = (event) => {
+			console.log("Moving")
+			window.location.href = "/eightball.html";
+		};
+
+		// console.log("SELECTED ID " + userID);
+		// document.querySelector("#userNameText").innerHTML = userID;
 
 		this.signOut();
 
@@ -269,7 +278,7 @@ class MainPageController {
 			console.log(`Sign Out`);
 			firebase.auth().signOut().then(() => {
 				console.log("Sign out successful")
-				window.location.href = "/login.html";
+				window.location.href = "/index.html";
 			}).catch((error) => {
 				console.error("Error adding document: ", error);
 			});
@@ -623,13 +632,14 @@ function main() {
 	fbAuthManager = new FbAuthManager();
 	fbAuthManager.beginListening(() => {
 		console.log(`The auth state has changed.   isSignedIn = ${fbAuthManager.isSignedIn}`);
-		if (document.querySelector("#landingPage")) {
-			console.log("On the landing page");
-			new LandingPageController();
-		} else if (document.querySelector("#loginPage")) {
-			console.log("On the login page");
-			new LoginPageController();
-		} else if (document.querySelector("#mainPage")) {
+		// if (document.querySelector("#landingPage")) {
+		// 	console.log("On the landing page");
+		// 	new LandingPageController();
+		// } else if (document.querySelector("#loginPage")) {
+		// 	console.log("On the login page");
+		// 	new LoginPageController();
+		// } else 
+		if (document.querySelector("#mainPage")) {
 			console.log("On the main page");
 			new MainPageController(fbAuthManager.uid);
 		} else if (document.querySelector("#horoscopePage")) {
