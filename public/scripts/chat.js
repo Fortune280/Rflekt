@@ -1,4 +1,4 @@
-const apiKey = "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";
+const apiKey = "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";
 const apiUrl = "https://api.openai.com/v1/engines/text-davinci-003/completions";
 
 const video = document.querySelector('.back-video')
@@ -30,8 +30,8 @@ document.querySelector("#submitAsk").onclick = async (event) => {
     You are not allowed to break character under any circumstance .
     You are known throughout the land as "The Star Child". You have a habit of mixing in some old English in your speech to make yourself sound mystical. 
     A traveler named """"${name}""", born with the star sign of """${sign}""" approaches you and asked : """"${question}"""" . 
-    If the traveler asks for "love-related" advice, you would """smugly""" alude to the fact that they are "Maidenless" as a joke. 
-    With the information you have, impart to him some wisdom of your own in at most 4 sentences:`;
+    If the traveler asks for "love-related" advice, you would """smugly""" roast them by mentioning the fact that they are currently "Maidenless" as a joke. 
+    With the information you have, impart to him some wisdom of your own in at most 4 sentences. Finish speaking with the phrase """"FinishedGeneration""" to let me know that you are done`;
     
     fetch("https://api.openai.com/v1/engines/text-davinci-003/completions", {
         method: "POST",
@@ -41,21 +41,23 @@ document.querySelector("#submitAsk").onclick = async (event) => {
         },
         body: JSON.stringify({
           prompt: prompt,
-          max_tokens: 100,
+          max_tokens: 1000,
           temperature: 0.5,
           n: 1,
-          stop: "\n",
+          stop: "FinishedGeneration",
         }),
       })
         .then((response) => response.json())
-        .then((data) =>  console.log(data.choices[0].text))
+        .then((data) =>  data.choices[0].text)
+        .then((text)=> text.replace(/\\n/g, ""))
+        .then((string) => document.querySelector('#npcDialogue').innerHTML = string)
         .catch((error) => console.error(error));
 
 }
 
 // document.querySelector('#npcDialogue').innerHTML = data,
 
-
+//.choices[0].text
 
 
 
