@@ -23,6 +23,7 @@
 }
 
 h1{
+    /* Semi Bold */
     font-size: 2rem;
     color:aliceblue;
     position: absolute;
@@ -80,6 +81,7 @@ span {
 }
 
 p1{
+    /* Chang to other font, Sentient? */
     color:aliceblue;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     position: absolute;
@@ -104,6 +106,21 @@ p1{
 #rightbar{
     right:5%;
     top:10%;
+}
+
+#createAccountButton{
+    top: 210px;
+}
+#logInButton{
+    top: 260px;
+}
+#logInRoseButton{
+    top: 320px;
+}
+
+.form-control{
+    background-color: rgb(255, 255, 255, 0.1);
+    color: white;
 }
 
 
