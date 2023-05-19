@@ -449,10 +449,10 @@ class ListPageController {
 		console.log("generating horoscope")
 		console.log(entry);
 
-		return htmlToElement(`<div id="${horoscope.id}" class="card">
-		<div class="card-body">
-			<h5 class="card-title">${horoscope.horoscope}</h5>
-			<h6  class="card-subtitle mb-2 text-muted">${entry}</h6>
+		return htmlToElement(`<div id="${horoscope.id}" class="card animated animatedFadeInUp fadeInUp">
+		<div class="card-body animated animatedFadeInUp fadeInUp">
+			<h5 class="card-title animated animatedFadeInUp fadeInUp">${horoscope.horoscope}</h5>
+			<h6  class="card-subtitle mb-2 text-muted animated animatedFadeInUp fadeInUp">${entry}</h6>
 		</div>
 	</div>`);
 	}
@@ -577,9 +577,9 @@ class DetailPageController {
 		console.log("generating horoscope")
 		console.log(entry);
 
-		return htmlToElement(`<div class="card">
-		<div class="card-body">
-			<h5 class="card-title">${horoscope}</h5>
+		return htmlToElement(`<div class="card animated animatedFadeInUp fadeInUp">
+		<div class="card-body animated animatedFadeInUp fadeInUp">
+			<h5 class="card-title animated animatedFadeInUp fadeInUp">${horoscope}</h5>
 			<h6  class="card-subtitle mb-2 text-muted">${entry}</h6>
 		</div>
 	</div>`);
@@ -614,13 +614,72 @@ class EightballPageController {
 						responseText = text[responseNumber].answer;
 					}
 
-					document.querySelector("#reponseText").textContent = responseText;
+					const myArray = responseText.split(" ");
+
+					this.generate8Ball(myArray);
+
+					//document.querySelector("#reponseText").textContent = responseText;
 
 				})
 				.catch(error => console.log('There was an error:', error));
 
 		};
 	}
+
+	// dynamic content generation
+	htmlToElement(html) {
+		var template = document.createElement('template');
+		html = html.trim();
+		template.innerHTML = html;
+		return template.content.firstChild;
+	}
+
+
+	_createstyle(i) {
+		return htmlToElement(`
+		span:nth-child(${i}) {
+			animation: fade-in 0.8s 0.${i}s forwards cubic-bezier(0.11, 0, 0.5, 0);
+		  }
+    `);
+	};
+
+
+	_createspan(text,i) {
+
+		return htmlToElement(`
+		<span style="span:nth-child(${i}) {animation: fade-in 0.8s 0.${i}s forwards cubic-bezier(0.11, 0, 0.5, 0);}">${text}</span>
+    `);
+
+	};
+
+
+
+	generate8Ball(arr) {
+		console.log("Generating Span")
+		const newList = htmlToElement(' <h1 class="centered" id="reponseText"></1h>');
+		//const newStyle = htmlToElement('<style id="spanStyle"> </style>');
+
+		for(let i = 0; i < arr.length ; i++){
+			const newtext = this._createspan(arr[i]+" ",i);
+			newList.appendChild(newtext);
+			
+			// const newStyle = this._createstyle(i);
+			// newStyle.appendChild(newStyle);
+		}
+		
+		const oldList = document.querySelector("#reponseText");
+		// const oldStyle = document.querySelector("#spanStyle");
+
+		oldList.removeAttribute("id");
+		oldList.hidden = true;
+		oldList.parentElement.appendChild(newList);
+
+		// oldStyle.removeAttribute("id");
+		// oldStyle.hidden = true;
+		// oldStyle.parentElement.appendChild(newStyle);
+
+	}
+
 
 
 }

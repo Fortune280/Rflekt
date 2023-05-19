@@ -1,12 +1,47 @@
-const apiKey = "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";
+const apiKey = "KEY HERE";
 const apiUrl = "https://api.openai.com/v1/engines/text-davinci-003/completions";
 
 const video = document.querySelector('.back-video')
 video.addEventListener("timeupdate", function(){
-    if(this.currentTime >= 1 * 60) {
+    if(this.currentTime >= 0 * 60) {
     this.pause();
     }
 });
+
+
+// dynamic content generation
+function htmlToElement(html) {
+	var template = document.createElement('template');
+	html = html.trim();
+	template.innerHTML = html;
+	return template.content.firstChild;
+}
+
+
+function _createtext(text) {
+	return htmlToElement(`
+    <p1 id="npcDialogue" class="animated animatedFadeInUp fadeInUp">${text}</p1>
+    `);
+
+
+};
+
+
+function generateContent(text) {
+	const newList = htmlToElement('<div id="dialogueContainer" class="container-fluid justify-content-center"></div>')
+	const newtext = _createtext(text);
+
+	newList.appendChild(newtext);
+
+	const oldList = document.querySelector("#dialogueContainer");
+
+	oldList.removeAttribute("id");
+	oldList.hidden = true;
+	oldList.parentElement.appendChild(newList);
+
+}
+
+//================= Who ask
 
 $("#ask").prependTo("body");
 
@@ -20,18 +55,18 @@ $("#addHoroscopeDialog").on("shown.bs.modal", () => {
     document.querySelector("#inputName").focus();
 });
 
-
+//===================
 document.querySelector("#submitAsk").onclick = async (event) => {
     const name = document.querySelector("#inputName").value;
     const sign = document.querySelector("#inputSign").value;
     const question = document.querySelector("#inputQuestion").value;
 
-    let prompt = `You are a talented Astrologist/Seer named """Genevieve Persephone Thornwood""". 
-    You are not allowed to break character under any circumstance .
-    You are known throughout the land as "The Star Child". You have a habit of mixing in some old English in your speech to make yourself sound mystical. 
+    let prompt = `You are a talented Astrologist/Seer named """Galadriel Prismar Thornevale""". 
+    You are not allowed to break character under any circumstance.
+    You are known throughout the land as "the Oracle of the Celestial Will". You have a habit of mixing in old English in your speech to make yourself sound sophisticated. 
     A traveler named """"${name}""", born with the star sign of """${sign}""" approaches you and asked : """"${question}"""" . 
-    If the traveler asks for "love-related" advice, you would """smugly""" roast them by mentioning the fact that they are currently "Maidenless" as a joke. 
-    With the information you have, impart to him some wisdom of your own in at most 4 sentences. Finish speaking with the phrase """"FinishedGeneration""" to let me know that you are done`;
+    If the traveler asks for "love-related" advice, or "compatibility with another person" you would """smugly""" roast them by mentioning the fact that they are currently and how desperate they are "Maidenless" as a joke. 
+    With the information you have, impart to them some wisdom of your own in at most 4 sentences. Finish speaking with the phrase """"FinishedGeneration""" to let me know that you are done`;
     
     fetch("https://api.openai.com/v1/engines/text-davinci-003/completions", {
         method: "POST",
@@ -50,17 +85,9 @@ document.querySelector("#submitAsk").onclick = async (event) => {
         .then((response) => response.json())
         .then((data) =>  data.choices[0].text)
         .then((text)=> text.replace(/\\n/g, ""))
-        .then((string) => document.querySelector('#npcDialogue').innerHTML = string)
+        .then((text)=> text.match(/(\b[a-zA-Z].+)/gm))
+        .then((matches) => matches[0])
+        .then((string) => generateContent(string))
         .catch((error) => console.error(error));
 
 }
-
-// document.querySelector('#npcDialogue').innerHTML = data,
-
-//.choices[0].text
-
-
-
-
-
-

@@ -1,0 +1,177 @@
+/*
+Green
+2d4632
+
+Bamboo
+efebd6
+
+*/
+@import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");
+
+body {
+    background: #f5f5f5;
+}
+
+.navbar {
+    background-color: #2d4632;
+    color: white;
+}
+
+
+
+    .navigation {
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .navigation button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      font-size: 16px;
+      background-color: #70a487;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    
+    .navigation button:hover {
+      background-color: #5e8e6f;
+    }
+
+#moveToHoroscopePageButton{
+    background-color: #2d4632;
+}
+#moveToEightballButton{
+    background-color: #2d4632;
+}
+
+.page-container {
+    margin-top: 75px;
+}
+
+.btn {
+    fill: darkgreen;
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 48
+}
+
+
+#fab {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    background: #ffffff28;
+    backdrop-filter: blur(1rem);
+    color: white;
+    text-align: center;
+    z-index: 999;
+}
+
+.bmd-layout-content {
+    height: 100vh;
+}
+
+.bmd-layout-drawer>header {
+    background-color: #2d4632;
+    color: white;
+}
+
+.bmd-layout-drawer>ul {
+    background-color: #ddd;
+}
+
+.list-group-item :first-child {
+    margin-right: 0.75rem;
+}
+
+#menuEdit,
+#menuDelete {
+    display: none;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.card {
+    margin: 10px 0;
+}
+
+#listPage .card-title,
+#listPage .card-subtitle {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body{
+  height:100%;
+  background: url('..\\images\\galaxy.jpg') center center no-repeat;
+  background-size: 180rem;
+  
+  
+}
+
+.card{
+  background: rgba(0, 0, 0, 0.562);
+  color: white;
+  backdrop-filter: blur(1rem);
+}
+
+.card-body {
+  color:white;
+
+  
+  
+}
+
+@keyframes fadeInUp {
+  from {
+      transform:  translate3d(0,40px,0)
+  }
+
+  to {
+      transform:  translate3d(0,0,0);
+      opacity: 1
+  }
+}
+
+@-webkit-keyframes fadeInUp {
+  from {
+      transform:  translate3d(0,40px,0)
+  }
+
+  to {
+      transform:  translate3d(0,0,0);
+      opacity: 1
+  }
+}
+
+.animated {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-fill-mode: both
+}
+
+.animatedFadeInUp {
+  opacity: 0
+}
+
+.fadeInUp {
+  opacity: 0;
+  animation-name: fadeInUp;
+  -webkit-animation-name: fadeInUp;
+}
+
+
+
+
+

@@ -9,7 +9,7 @@
     overflow: hidden;
     align-self: center;
     backdrop-filter: blur(0.4rem);
-    filter: brightness(0.3) blur(0.35rem);
+    filter: brightness(0.4) blur(0.5rem);
     
 }
 .hero{
@@ -93,7 +93,7 @@ p1{
 
 #dw-s2{
     backdrop-filter: blur(1rem);
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.055);
     
 }
 
@@ -206,6 +206,10 @@ body{
     text-decoration: none;
     transform:translateX(-50%);
 
+}
+
+button{
+    top:75%;
 }
 
 
