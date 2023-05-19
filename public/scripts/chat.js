@@ -1,4 +1,6 @@
-const apiKey = "KEY HERE";
+// Don't push api key
+
+const apiKey = "TEST";
 const apiUrl = "https://api.openai.com/v1/engines/text-davinci-003/completions";
 
 const video = document.querySelector('.back-video')

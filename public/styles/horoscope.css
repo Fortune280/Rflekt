@@ -112,11 +112,8 @@ body {
 }
 
 body{
-  height:100%;
-  background: url('..\\images\\galaxy.jpg') center center no-repeat;
-  background-size: 180rem;
-  
-  
+  background: url('..\\images\\galaxy.jpg') no-repeat center center fixed;
+  background-size: cover;
 }
 
 .card{
