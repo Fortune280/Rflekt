@@ -1,0 +1,161 @@
+/* Dark: 1F2B1F
+Light: 364935 */
+
+
+
+.page-container {
+    margin-top: 75px;
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 48
+}
+
+
+.bmd-layout-content {
+    height: 100vh;
+    
+}
+
+
+#dw-s2{
+    background: rgba(255, 255, 255, 0.016);
+    backdrop-filter: blur(1rem);
+    z-index: 6;
+}
+
+.list-group{
+    backdrop-filter: blur(1rem);
+}
+
+
+.navbar-toggler{
+    position:absolute;
+    margin-top: 20px;
+    margin-left: 20px;
+    top: 3%;
+}
+
+
+.list-group-item :first-child {
+    margin-right: 0.75rem;
+}
+
+#menuEdit,
+#menuDelete {
+    display: none;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+/*  */
+
+
+i, header, .list-group-item,
+#menuMoveToHomePage,
+#menuMoveToHoroScopePage,
+#menuMoveToEightballPage,
+#menuSignOut{
+
+    color:white;
+}
+
+.row{
+    z-index: 8;
+}
+
+
+
+.chatbody{
+    background: url('..\\images\\stargaze.jpg') center center no-repeat;
+    backdrop-filter:  brightness(0.3) blur(0.2rem);
+   
+}
+
+.bmd-layout-drawer>header {
+    color: rgb(255, 255, 255);
+    backdrop-filter: blur(1rem);
+
+}
+
+
+.bmd-layout-drawer{
+    backdrop-filter: blur(1rem) ;
+    background: rgba(255, 255, 255, 0.016);
+}
+
+
+@keyframes fadeInUp {
+    from {
+        transform: translateX(-50%) translate3d(0,40px,0)
+    }
+
+    to {
+        transform: translateX(-50%) translate3d(0,0,0);
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes fadeInUp {
+    from {
+        transform:  translateX(-50%) translate3d(0,40px,0)
+    }
+
+    to {
+        transform: translateX(-50%) translate3d(0,0,0);
+        opacity: 1
+    }
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-fill-mode: both
+}
+
+.animatedFadeInUp {
+    opacity: 0
+}
+
+.fadeInUp {
+    opacity: 0;
+    animation-name: fadeInUp;
+    -webkit-animation-name: fadeInUp;
+}
+
+
+span {
+    display: inline-block;
+    opacity: 0;
+    filter: blur(4px);
+}
+
+#textBox {
+    display:flex;
+    
+    background: rgba(0, 0, 0, 0.7);
+    height: 500px;
+    width: 80%;
+    align-items: center;
+    justify-content: center;
+    line-height: 250px;
+    color: white;
+   
+
+    position: absolute;
+    left:50%;
+    
+    align-self: center;
+    transform:  translateY(10%);
+    backdrop-filter: blur(1rem);
+
+    
+    
+}

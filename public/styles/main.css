@@ -74,3 +74,10 @@ body {
     text-overflow: ellipsis;
 }
 
+/*  */
+
+.chatbody{
+    background: url('..\\images\\stargaze.jpg') center center no-repeat;
+    backdrop-filter:  brightness(0.3) blur(0.4rem);
+   
+}
