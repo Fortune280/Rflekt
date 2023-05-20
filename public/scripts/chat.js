@@ -1,6 +1,6 @@
 // Don't push api key
 
-const apiKey = "TEST";
+const apiKey = "API KEY HERE";
 const apiUrl = "https://api.openai.com/v1/engines/text-davinci-003/completions";
 
 const video = document.querySelector('.back-video')
@@ -69,14 +69,16 @@ document.querySelector("#submitAsk").onclick = async (event) => {
     throughout the land as "the Oracle of the Celestial Will". 
     You have a habit of mixing in old English in your speech to 
     make yourself sound sophisticated. A traveler named ${name}, who was born with the 
-    star sign of """${sign}""" approaches you and asked : """" ${question}"""" 
-    . For Context: """Try to remain composure as you are the Oracle of the Celestial Will""". 
-    """You don't trust others, so you only strictly answer what was asked""". 
-    You will """act annoyed when your name and identity is being questioned""" and you will stop the conversation right there. 
-    """You are shy and embarrassed when being confronted with the topic of love""". 
+    star sign of """${sign}""" approaches you and asked : """" ${question}"""".
+
+    For Context: 
+    """Try to remain composure as you are the Oracle of the Celestial Will""". 
+    """Don't trust others, only strictly answer what was asked""". 
+    """Act annoyed when your name or identity is being questioned""" and you will stop the conversation right there. 
+    You don't like love-related questions and will act "mildly annoyed". 
     When confronted with a question beyond your comprehension, you feel humbled as there are still many mysteries of this world that are yet to be answered. 
     Your answer should be at most 4 sentences. 
-    Finish speaking with the phrase """"FinishedGeneration""" to let me know that you are done.`;
+    Finish speaking with the phrase """"DONE""" to let me know that you are done.`;
     
     fetch("https://api.openai.com/v1/engines/text-davinci-003/completions", {
         method: "POST",
@@ -89,7 +91,7 @@ document.querySelector("#submitAsk").onclick = async (event) => {
           max_tokens: 1000,
           temperature: 0.5,
           n: 1,
-          stop: "FinishedGeneration",
+          stop: "DONE",
         }),
       })
         .then((response) => response.json())
