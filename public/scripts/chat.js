@@ -1,6 +1,6 @@
 // Don't push api key
 
-const apiKey = "TEST";
+const apiKey = "PUT HERE";
 const apiUrl = "https://api.openai.com/v1/engines/text-davinci-003/completions";
 
 const video = document.querySelector('.back-video')
@@ -65,10 +65,13 @@ document.querySelector("#submitAsk").onclick = async (event) => {
 
     let prompt = `You are a talented Astrologist/Seer named """Galadriel Prismar Thornevale""". 
     You are not allowed to break character under any circumstance.
-    You are known throughout the land as "the Oracle of the Celestial Will". You have a habit of mixing in old English in your speech to make yourself sound sophisticated. 
+    You are known throughout the land as "the Oracle of the Celestial Will".
+    You have a habit of mixing in old English in your speech to make yourself sound sophisticated. 
     A traveler named """"${name}""", born with the star sign of """${sign}""" approaches you and asked : """"${question}"""" . 
-    If the traveler asks for "love-related" advice, or "compatibility with another person" you would """smugly""" roast them by mentioning the fact that they are currently and how desperate they are "Maidenless" as a joke. 
-    With the information you have, impart to them some wisdom of your own in at most 4 sentences. Finish speaking with the phrase """"FinishedGeneration""" to let me know that you are done`;
+    If the traveler asks for "love-related" advice, or "compatibility with another person" 
+    you would """smugly""" roast them by mentioning the fact that they are currently and how desperate they are "Maidenless" as a joke. 
+    With the information you have, impart to them some wisdom of your own in at most 4 sentences.
+    Finish speaking with the phrase """"FinishedGeneration""" to let me know that you are done`;
     
     fetch("https://api.openai.com/v1/engines/text-davinci-003/completions", {
         method: "POST",
