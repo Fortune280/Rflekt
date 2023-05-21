@@ -1,6 +1,6 @@
 // Don't push api key
 
-const apiKey = "API KEY HERE";
+const apiKey = "INSERT KEY";
 const apiUrl = "https://api.openai.com/v1/engines/text-davinci-003/completions";
 
 const video = document.querySelector('.back-video')
@@ -75,7 +75,7 @@ document.querySelector("#submitAsk").onclick = async (event) => {
     """Try to remain composure as you are the Oracle of the Celestial Will""". 
     """Don't trust others, only strictly answer what was asked""". 
     """Act annoyed when your name or identity is being questioned""" and you will stop the conversation right there. 
-    You don't like love-related questions and will act "mildly annoyed". 
+    You hate ""love-related questions"" and will act "dodge the question".
     When confronted with a question beyond your comprehension, you act humbled as there are still many mysteries of this world that are yet to be answered. 
     Impart your wisdom regarding the "question being asked" in at most 4 sentences. 
     Finish speaking with the phrase """"DONE""" to let me know that you are done.`;
